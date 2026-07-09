@@ -1,0 +1,154 @@
+<?php
+
+namespace App\Entity;
+
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Delete;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity]
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(),
+        new Put(),
+        new Delete(),
+    ]
+)]
+class Booking
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'bookings')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $student = null;
+
+    #[ORM\ManyToOne(targetEntity: TutorProfile::class, inversedBy: 'bookings')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?TutorProfile $tutorProfile = null;
+
+    #[ORM\ManyToOne(targetEntity: Subject::class, inversedBy: 'bookings')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Subject $subject = null;
+
+    #[ORM\Column(type: 'datetime')]
+    private ?\DateTimeInterface $startAt = null;
+
+    #[ORM\Column(type: 'integer')]
+    private ?int $durationMinutes = null;
+
+    #[ORM\Column(type: 'string', enumType: BookingStatus::class)]
+    private BookingStatus $status = BookingStatus::PENDING;
+
+    #[ORM\Column(type: 'datetime')]
+    private ?\DateTimeInterface $createdAt = null;
+
+    #[ORM\OneToOne(targetEntity: Review::class, mappedBy: 'booking')]
+    private ?Review $review = null;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getStudent(): ?User
+    {
+        return $this->student;
+    }
+
+    public function setStudent(?User $student): static
+    {
+        $this->student = $student;
+        return $this;
+    }
+
+    public function getTutorProfile(): ?TutorProfile
+    {
+        return $this->tutorProfile;
+    }
+
+    public function setTutorProfile(?TutorProfile $tutorProfile): static
+    {
+        $this->tutorProfile = $tutorProfile;
+        return $this;
+    }
+
+    public function getSubject(): ?Subject
+    {
+        return $this->subject;
+    }
+
+    public function setSubject(?Subject $subject): static
+    {
+        $this->subject = $subject;
+        return $this;
+    }
+
+    public function getStartAt(): ?\DateTimeInterface
+    {
+        return $this->startAt;
+    }
+
+    public function setStartAt(\DateTimeInterface $startAt): static
+    {
+        $this->startAt = $startAt;
+        return $this;
+    }
+
+    public function getDurationMinutes(): ?int
+    {
+        return $this->durationMinutes;
+    }
+
+    public function setDurationMinutes(int $durationMinutes): static
+    {
+        $this->durationMinutes = $durationMinutes;
+        return $this;
+    }
+
+    public function getStatus(): BookingStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(BookingStatus $status): static
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    public function getReview(): ?Review
+    {
+        return $this->review;
+    }
+
+    public function setReview(?Review $review): static
+    {
+        $this->review = $review;
+        return $this;
+    }
+}
