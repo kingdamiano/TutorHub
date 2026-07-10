@@ -35,7 +35,7 @@ class Subject
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     private ?string $slug = null;
 
-    #[ORM\ManyToMany(targetEntity: TutorProfile::class, inversedBy: 'subjects')]
+    #[ORM\ManyToMany(targetEntity: TutorProfile::class, mappedBy: 'subjects')]
     private Collection $tutorProfiles;
 
     #[ORM\OneToMany(targetEntity: Booking::class, mappedBy: 'subject')]
@@ -89,7 +89,9 @@ class Subject
 
     public function removeTutorProfile(TutorProfile $tutorProfile): static
     {
-        $this->tutorProfiles->removeElement($tutorProfile);
+        if ($this->tutorProfiles->removeElement($tutorProfile)) {
+            // owning side (TutorProfile) should handle the inverse relationship
+        }
         return $this;
     }
 

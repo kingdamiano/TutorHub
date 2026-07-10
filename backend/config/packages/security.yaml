@@ -27,6 +27,7 @@ security:
         # Public read-only endpoints (GET only)
         - { path: ^/api/subjects$, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/subjects$, roles: PUBLIC_ACCESS, methods: [POST] }
+        - { path: ^/api/users$, roles: PUBLIC_ACCESS, methods: [POST] }
         - { path: ^/api/subjects/\d+$, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/tutor_profiles$, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/tutor_profiles/\d+$, roles: PUBLIC_ACCESS, methods: [GET] }

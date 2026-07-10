@@ -7,6 +7,11 @@ api_platform:
         jsonld: ['application/ld+json']
         jsonopenapi: ['application/vnd.openapi+json']
         html: ['text/html']
+    swagger:
+        api_keys:
+            bearerAuth:
+                name: Authorization
+                type: header
     defaults:
         stateless: true
         cache_headers:

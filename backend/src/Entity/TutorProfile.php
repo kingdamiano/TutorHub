@@ -7,18 +7,20 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-#[ApiResource(
+    #[ApiResource(
     operations: [
         new Get(),
         new GetCollection(),
         new Post(),
         new Put(),
+        new Patch(inputFormats: ['json' => ['application/merge-patch+json']]),
         new Delete(),
     ]
 )]
@@ -51,7 +53,7 @@ class TutorProfile
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $isApproved = false;
 
-    #[ORM\ManyToMany(targetEntity: Subject::class, mappedBy: 'tutorProfiles')]
+    #[ORM\ManyToMany(targetEntity: Subject::class, inversedBy: 'tutorProfiles', cascade: ['persist'])]
     private Collection $subjects;
 
     #[ORM\OneToMany(targetEntity: Availability::class, mappedBy: 'tutorProfile', cascade: ['remove'])]
@@ -158,7 +160,6 @@ class TutorProfile
     {
         if (!$this->subjects->contains($subject)) {
             $this->subjects->add($subject);
-            $subject->addTutorProfile($this);
         }
         return $this;
     }
@@ -166,7 +167,6 @@ class TutorProfile
     public function removeSubject(Subject $subject): static
     {
         if ($this->subjects->removeElement($subject)) {
-            $subject->removeTutorProfile($this);
         }
         return $this;
     }
