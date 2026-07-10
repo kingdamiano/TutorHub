@@ -20,10 +20,24 @@ security:
             provider: app_user_provider
             logout: ~
     access_control:
-        - { path: ^/api/login, roles: PUBLIC_ACCESS }
-        - { path: ^/api/register, roles: PUBLIC_ACCESS }
+        # Public authentication endpoints
+        - { path: ^/api/login$, roles: PUBLIC_ACCESS, methods: [POST] }
+        - { path: ^/api/register$, roles: PUBLIC_ACCESS, methods: [POST] }
+
+        # Public read-only endpoints (GET only)
+        - { path: ^/api/subjects$, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/subjects$, roles: PUBLIC_ACCESS, methods: [POST] }
+        - { path: ^/api/subjects/\d+$, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/tutor_profiles$, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/tutor_profiles/\d+$, roles: PUBLIC_ACCESS, methods: [GET] }
+
+        # API documentation (public)
         - { path: ^/api/docs, roles: PUBLIC_ACCESS }
+
+        # All other API routes require authentication (PUT, DELETE on subjects, tutor_profiles, availability, bookings, etc.)
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+
+        # Admin routes require admin role
         - { path: ^/admin, roles: ROLE_ADMIN }
 
 when@test:
