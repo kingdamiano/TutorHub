@@ -7,17 +7,38 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ApiResource(
     operations: [
-        new Get(),
-        new GetCollection(),
-        new Post(),
-        new Put(),
-        new Delete(),
+        new Get(
+            security: "(is_granted('ROLE_STUDENT') and object.getStudent() and object.getStudent().getId() == user.getId()) or (is_granted('ROLE_TUTOR') and object.getTutorProfile() and object.getTutorProfile().getUser() and object.getTutorProfile().getUser().getId() == user.getId())",
+            securityMessage: 'Access denied. You are not related to this booking.'
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_STUDENT') or is_granted('ROLE_TUTOR')",
+            securityMessage: 'Only students and tutors can view bookings.'
+        ),
+        new Post(
+            security: "is_granted('ROLE_STUDENT')",
+            securityPostDenormalize: "is_granted('ROLE_STUDENT') and object.getStudent() and object.getStudent().getId() == user.getId()",
+            securityMessage: 'Only the booking student can create a booking for themselves.'
+        ),
+        new Put(
+            security: "(is_granted('ROLE_STUDENT') and object.getStudent() and object.getStudent().getId() == user.getId()) or (is_granted('ROLE_TUTOR') and object.getTutorProfile() and object.getTutorProfile().getUser() and object.getTutorProfile().getUser().getId() == user.getId())",
+            securityMessage: 'Only the booking student or the related tutor can edit this booking.'
+        ),
+        new Patch(
+            security: "(is_granted('ROLE_STUDENT') and object.getStudent() and object.getStudent().getId() == user.getId()) or (is_granted('ROLE_TUTOR') and object.getTutorProfile() and object.getTutorProfile().getUser() and object.getTutorProfile().getUser().getId() == user.getId())",
+            securityMessage: 'Only the booking student or the related tutor can patch this booking.'
+        ),
+        new Delete(
+            security: "(is_granted('ROLE_STUDENT') and object.getStudent() and object.getStudent().getId() == user.getId()) or (is_granted('ROLE_TUTOR') and object.getTutorProfile() and object.getTutorProfile().getUser() and object.getTutorProfile().getUser().getId() == user.getId())",
+            securityMessage: 'Only the booking student or the related tutor can delete this booking.'
+        ),
     ]
 )]
 class Booking
