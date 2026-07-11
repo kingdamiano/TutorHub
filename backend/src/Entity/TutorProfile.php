@@ -14,14 +14,27 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-    #[ApiResource(
+#[ApiResource(
     operations: [
         new Get(),
         new GetCollection(),
-        new Post(),
-        new Put(),
-        new Patch(inputFormats: ['json' => ['application/merge-patch+json']]),
-        new Delete(),
+        new Post(
+            security: "is_granted('ROLE_TUTOR')",
+            securityMessage: 'Only tutors can create a tutor profile.'
+        ),
+        new Put(
+            security: "is_granted('ROLE_TUTOR') and object.getUser().getId() == user.getId()",
+            securityMessage: 'Only the profile owner can edit this tutor profile.'
+        ),
+        new Patch(
+            inputFormats: ['json' => ['application/merge-patch+json']],
+            security: "is_granted('ROLE_TUTOR') and object.getUser().getId() == user.getId()",
+            securityMessage: 'Only the profile owner can patch this tutor profile.'
+        ),
+        new Delete(
+            security: "is_granted('ROLE_TUTOR') and object.getUser().getId() == user.getId()",
+            securityMessage: 'Only the profile owner can delete this tutor profile.'
+        ),
     ]
 )]
 class TutorProfile

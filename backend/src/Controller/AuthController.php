@@ -66,6 +66,13 @@ class AuthController extends AbstractController
             ], 400);
         }
 
+        if (!isset($data['role']) || !in_array($data['role'], ['student', 'tutor'])) {
+            return $this->json([
+                'code' => 400,
+                'message' => 'Invalid or missing role. Must be "student" or "tutor"'
+            ], 400);
+        }
+
         $existingUser = $em->getRepository(User::class)->findOneBy(['email' => $data['email']]);
         if ($existingUser) {
             return $this->json([
@@ -77,7 +84,9 @@ class AuthController extends AbstractController
         $user = new User();
         $user->setEmail($data['email']);
         $user->setPassword($passwordHasher->hashPassword($user, $data['password']));
-        $user->setRoles(['ROLE_USER']);
+
+        $role = $data['role'] === 'tutor' ? 'ROLE_TUTOR' : 'ROLE_STUDENT';
+        $user->setRoles([$role]);
 
         $em->persist($user);
         $em->flush();
