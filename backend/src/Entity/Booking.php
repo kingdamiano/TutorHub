@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 #[ApiResource(
@@ -61,9 +62,12 @@ class Booking
     private ?Subject $subject = null;
 
     #[ORM\Column(type: 'datetime')]
+    #[Assert\GreaterThan('now', message: 'Booking start time must be in the future')]
     private ?\DateTimeInterface $startAt = null;
 
     #[ORM\Column(type: 'integer')]
+    #[Assert\Range(min: 15, max: 240, notInRangeMessage: 'Duration must be between {{ min }} and {{ max }} minutes')]
+    #[Assert\NotNull(message: 'Duration is required')]
     private ?int $durationMinutes = null;
 
     #[ORM\Column(type: 'string', enumType: BookingStatus::class)]

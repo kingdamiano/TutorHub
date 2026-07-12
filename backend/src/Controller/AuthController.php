@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AuthController extends AbstractController
 {
@@ -55,7 +56,8 @@ class AuthController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         UserPasswordHasherInterface $passwordHasher,
-        JWTTokenManagerInterface $tokenManager
+        JWTTokenManagerInterface $tokenManager,
+        ValidatorInterface $validator
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
@@ -73,6 +75,13 @@ class AuthController extends AbstractController
             ], 400);
         }
 
+        if (!is_string($data['password']) || strlen($data['password']) < 8) {
+            return $this->json([
+                'code' => 422,
+                'message' => 'Password must be at least 8 characters long'
+            ], 422);
+        }
+
         $existingUser = $em->getRepository(User::class)->findOneBy(['email' => $data['email']]);
         if ($existingUser) {
             return $this->json([
@@ -87,6 +96,20 @@ class AuthController extends AbstractController
 
         $role = $data['role'] === 'tutor' ? 'ROLE_TUTOR' : 'ROLE_STUDENT';
         $user->setRoles([$role]);
+
+        // Validate the user entity
+        $errors = $validator->validate($user);
+        if (count($errors) > 0) {
+            $errorMessages = [];
+            foreach ($errors as $error) {
+                $errorMessages[] = $error->getPropertyPath() . ': ' . $error->getMessage();
+            }
+            return $this->json([
+                'code' => 422,
+                'message' => 'Validation failed',
+                'errors' => $errorMessages
+            ], 422);
+        }
 
         $em->persist($user);
         $em->flush();

@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\Delete;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 #[ApiResource(
@@ -49,12 +50,16 @@ class TutorProfile
     private ?User $user = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
+    #[Assert\Length(min: 1, max: 2000, minMessage: 'Bio cannot be empty', maxMessage: 'Bio must not exceed 2000 characters')]
     private ?string $bio = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\NotBlank(message: 'City cannot be empty')]
     private ?string $city = null;
 
     #[ORM\Column(type: 'decimal', precision: 8, scale: 2)]
+    #[Assert\Positive(message: 'Price per hour must be greater than 0')]
+    #[Assert\NotNull(message: 'Price per hour is required')]
     private ?string $pricePerHour = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]

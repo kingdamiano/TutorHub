@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Delete;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 #[ApiResource(
@@ -30,9 +31,12 @@ class Subject
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(message: 'Subject name cannot be empty')]
     private ?string $name = null;
 
     #[ORM\Column(type: 'string', length: 255, unique: true)]
+    #[Assert\NotBlank(message: 'Slug cannot be empty')]
+    #[Assert\Regex(pattern: '/^[a-z0-9-]+$/', message: 'Slug must contain only lowercase letters, numbers, and hyphens')]
     private ?string $slug = null;
 
     #[ORM\ManyToMany(targetEntity: TutorProfile::class, mappedBy: 'subjects')]
