@@ -9,6 +9,10 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -38,6 +42,9 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
     ]
 )]
+#[ApiFilter(SearchFilter::class, properties: ['city' => 'partial', 'subjects.id' => 'exact', 'subjects.slug' => 'exact'])]
+#[ApiFilter(RangeFilter::class, properties: ['pricePerHour'])]
+#[ApiFilter(BooleanFilter::class, properties: ['isApproved'])]
 class TutorProfile
 {
     #[ORM\Id]
