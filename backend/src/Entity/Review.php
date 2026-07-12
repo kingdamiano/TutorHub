@@ -9,17 +9,34 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator\ValidReviewConstraint;
 
 #[ORM\Entity]
 #[ApiResource(
     operations: [
-        new Get(),
-        new GetCollection(),
-        new Post(),
-        new Put(),
-        new Delete(),
+        new Get(
+            security: "true"
+        ),
+        new GetCollection(
+            security: "true"
+        ),
+        new Post(
+            security: "is_granted('ROLE_STUDENT')",
+            securityPostDenormalize: "is_granted('ROLE_STUDENT') and object.getBooking() and object.getBooking().getStudent() and object.getBooking().getStudent().getId() == user.getId()",
+            securityMessage: 'Only the booking student can create a review.'
+        ),
+        new Put(
+            security: "is_granted('ROLE_STUDENT') and object.getBooking() and object.getBooking().getStudent() and object.getBooking().getStudent().getId() == user.getId()",
+            securityMessage: 'Only the booking student can edit this review.'
+        ),
+        new Delete(
+            security: "is_granted('ROLE_STUDENT') and object.getBooking() and object.getBooking().getStudent() and object.getBooking().getStudent().getId() == user.getId()",
+            securityMessage: 'Only the booking student can delete this review.'
+        ),
     ]
 )]
+#[ValidReviewConstraint]
 class Review
 {
     #[ORM\Id]
@@ -32,6 +49,8 @@ class Review
     private ?Booking $booking = null;
 
     #[ORM\Column(type: 'smallint')]
+    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Rating must be between 1 and 5')]
+    #[Assert\NotNull(message: 'Rating is required')]
     private ?int $rating = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
@@ -92,5 +111,10 @@ class Review
     {
         $this->createdAt = $createdAt;
         return $this;
+    }
+
+    public function getStudent(): ?User
+    {
+        return $this->booking?->getStudent();
     }
 }

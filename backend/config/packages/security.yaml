@@ -33,6 +33,8 @@ security:
         - { path: ^/api/subjects/\d+$, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/tutor_profiles$, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/tutor_profiles/\d+$, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/reviews$, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/reviews/\d+$, roles: PUBLIC_ACCESS, methods: [GET] }
 
         # API documentation (public)
         - { path: ^/api/docs, roles: PUBLIC_ACCESS }
