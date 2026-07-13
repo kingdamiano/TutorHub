@@ -35,6 +35,8 @@ security:
         - { path: ^/api/tutor_profiles/\d+$, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/reviews$, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/reviews/\d+$, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/availabilities$, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/availabilities/\d+$, roles: PUBLIC_ACCESS, methods: [GET] }
 
         # API documentation (public)
         - { path: ^/api/docs, roles: PUBLIC_ACCESS }
