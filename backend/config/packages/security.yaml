@@ -27,14 +27,11 @@ security:
         - { path: ^/api/register$, roles: PUBLIC_ACCESS, methods: [POST] }
 
         # Public read-only endpoints (GET only)
-        - { path: ^/api/subjects$, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/subjects(?:/[^/]+)?$, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/subjects$, roles: PUBLIC_ACCESS, methods: [POST] }
         - { path: ^/api/users$, roles: PUBLIC_ACCESS, methods: [POST] }
-        - { path: ^/api/subjects/\d+$, roles: PUBLIC_ACCESS, methods: [GET] }
-        - { path: ^/api/tutor_profiles$, roles: PUBLIC_ACCESS, methods: [GET] }
-        - { path: ^/api/tutor_profiles/\d+$, roles: PUBLIC_ACCESS, methods: [GET] }
-        - { path: ^/api/reviews$, roles: PUBLIC_ACCESS, methods: [GET] }
-        - { path: ^/api/reviews/\d+$, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/tutor_profiles(?:/[^/]+)?$, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/reviews(?:/[^/]+)?$, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/availabilities$, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/availabilities/\d+$, roles: PUBLIC_ACCESS, methods: [GET] }
 
