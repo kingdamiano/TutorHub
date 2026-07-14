@@ -48,7 +48,8 @@ export default function AuthStatus() {
   if (userEmail) {
     return (
       <div>
-        Вы вошли как: {userEmail} <button type="button" onClick={handleLogout}>Выйти</button>
+        Вы вошли как: {userEmail} <Link href="/dashboard">Личный кабинет</Link>{' '}
+        <button type="button" onClick={handleLogout}>Выйти</button>
       </div>
     );
   }
