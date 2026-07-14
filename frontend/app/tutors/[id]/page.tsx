@@ -1,4 +1,5 @@
 import React from 'react';
+import BookingForm from './BookingForm';
 
 interface TutorPageProps {
   params: Promise<{
@@ -49,6 +50,11 @@ export default async function TutorProfilePage({ params }: TutorPageProps) {
     (tutor.subjects ?? []).map((subjectIri: string) => fetchSubjectName(subjectIri))
   );
 
+  const subjectOptions = (tutor.subjects ?? []).map((subjectIri: string, index: number) => ({
+    iri: subjectIri,
+    name: subjectNames[index] ?? 'Unknown subject',
+  }));
+
   return (
     <main>
       <h1>Профиль репетитора {id}</h1>
@@ -64,6 +70,7 @@ export default async function TutorProfilePage({ params }: TutorPageProps) {
           ))}
         </ul>
       </div>
+      <BookingForm tutorProfileIri={tutor['@id'] ?? `/api/tutor_profiles/${id}`} subjectOptions={subjectOptions} />
     </main>
   );
 }
