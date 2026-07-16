@@ -21,7 +21,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity]
 #[ApiResource(
     operations: [
-        new Get(),
+        new Get(
+            security: "object.isApproved() or is_granted('ROLE_ADMIN') or (is_granted('ROLE_USER') and object.getUser() and object.getUser().getId() == user.getId())",
+            securityMessage: 'Only approved profiles, owners, and admins may view this tutor profile.'
+        ),
         new GetCollection(),
         new Post(
             security: "is_granted('ROLE_TUTOR')",
@@ -33,8 +36,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Patch(
             inputFormats: ['json' => ['application/merge-patch+json']],
-            security: "is_granted('ROLE_ADMIN') or (is_granted('ROLE_TUTOR') and object.getUser().getId() == user.getId())",
-            securityMessage: 'Only the profile owner or an admin can patch this tutor profile.'
+            security: "is_granted('ROLE_TUTOR') and object.getUser().getId() == user.getId()",
+            securityMessage: 'Only the profile owner can patch this tutor profile.'
         ),
         new Delete(
             security: "is_granted('ROLE_TUTOR') and object.getUser().getId() == user.getId()",
@@ -44,7 +47,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[ApiFilter(SearchFilter::class, properties: ['city' => 'partial', 'subjects.id' => 'exact', 'subjects.slug' => 'exact'])]
 #[ApiFilter(RangeFilter::class, properties: ['pricePerHour'])]
-#[ApiFilter(BooleanFilter::class, properties: ['isApproved'])]
+#[ApiFilter(BooleanFilter::class, properties: ['isApproved', 'rejected'])]
 class TutorProfile
 {
     #[ORM\Id]
@@ -77,6 +80,9 @@ class TutorProfile
 
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $isApproved = false;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $rejected = false;
 
     #[ORM\ManyToMany(targetEntity: Subject::class, inversedBy: 'tutorProfiles', cascade: ['persist'])]
     private Collection $subjects;
@@ -173,6 +179,17 @@ class TutorProfile
     public function setIsApproved(bool $isApproved): static
     {
         $this->isApproved = $isApproved;
+        return $this;
+    }
+
+    public function isRejected(): bool
+    {
+        return $this->rejected;
+    }
+
+    public function setRejected(bool $rejected): static
+    {
+        $this->rejected = $rejected;
         return $this;
     }
 

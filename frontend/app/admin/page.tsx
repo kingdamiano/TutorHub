@@ -39,7 +39,7 @@ export default function AdminPage() {
           return;
         }
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tutor_profiles?isApproved=false`, { headers: { Authorization: `Bearer ${t}`, Accept: 'application/ld+json' } });
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tutor_profiles?isApproved=false&rejected=false`, { headers: { Authorization: `Bearer ${t}`, Accept: 'application/ld+json' } });
         if (!res.ok) throw new Error('Failed to fetch tutor profiles');
         const json = await res.json();
         const items = json['hydra:member'] ?? json ?? [];
@@ -62,7 +62,7 @@ export default function AdminPage() {
     const iri = profile['@id'] ?? `/api/tutor_profiles/${profile.id}`;
     setProcessing((s) => [...s, iri]);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${iri}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tutor_profiles/${profile.id}/approve`, {
         method: 'PATCH',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/merge-patch+json', Accept: 'application/ld+json' },
         body: JSON.stringify({ isApproved: true }),
@@ -82,10 +82,10 @@ export default function AdminPage() {
     const iri = profile['@id'] ?? `/api/tutor_profiles/${profile.id}`;
     setProcessing((s) => [...s, iri]);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${iri}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tutor_profiles/${profile.id}/approve`, {
         method: 'PATCH',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/merge-patch+json', Accept: 'application/ld+json' },
-        body: JSON.stringify({ isApproved: false }),
+        body: JSON.stringify({ rejected: true }),
       });
       if (!res.ok) throw new Error('Failed to reject');
       // remove from list (processed)
@@ -110,7 +110,10 @@ export default function AdminPage() {
             <div><strong>Bio:</strong> {p.bio}</div>
             <div style={{ marginTop: 6 }}>
               <button disabled={processing.includes(p['@id'] ?? `/api/tutor_profiles/${p.id}`)} onClick={() => approve(p)}>Одобрить</button>
-              {' '}<Link href={p['@id'] ? p['@id'].replace('/api', '') : `/tutors/${p.id}`}>Посмотреть</Link>
+              {' '}
+              <button disabled={processing.includes(p['@id'] ?? `/api/tutor_profiles/${p.id}`)} onClick={() => reject(p)}>Отклонить</button>
+              {' '}
+              <Link href={`/tutors/${p.id}`}>Посмотреть</Link>
             </div>
           </li>
         ))}

@@ -8,6 +8,8 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator\ValidReviewConstraint;
@@ -36,6 +38,7 @@ use App\Validator\ValidReviewConstraint;
         ),
     ]
 )]
+#[ApiFilter(SearchFilter::class, properties: ['booking.tutorProfile' => 'exact'])]
 #[ValidReviewConstraint]
 class Review
 {

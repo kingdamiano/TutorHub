@@ -27,10 +27,11 @@ class TutorProfileExtension implements QueryCollectionExtensionInterface, QueryI
             return;
         }
 
-        // For unauthenticated users (public access), show only approved profiles
-        if (!$this->security->getUser()) {
+        // For non-admin users, show only approved, not rejected profiles
+        if (!$this->security->isGranted('ROLE_ADMIN')) {
             $rootAlias = $queryBuilder->getRootAliases()[0];
             $queryBuilder->andWhere($rootAlias . '.isApproved = true');
+            $queryBuilder->andWhere($rootAlias . '.rejected = false');
         }
     }
 
@@ -46,10 +47,11 @@ class TutorProfileExtension implements QueryCollectionExtensionInterface, QueryI
             return;
         }
 
-        // For unauthenticated users viewing a single profile, show only if approved
+        // For unauthenticated users viewing a single profile, show only if approved and not rejected
         if (!$this->security->getUser()) {
             $rootAlias = $queryBuilder->getRootAliases()[0];
             $queryBuilder->andWhere($rootAlias . '.isApproved = true');
+            $queryBuilder->andWhere($rootAlias . '.rejected = false');
         }
     }
 }
