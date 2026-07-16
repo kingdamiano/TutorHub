@@ -19,6 +19,7 @@ export default function AuthStatus() {
   const router = useRouter();
   const pathname = usePathname();
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [isTutor, setIsTutor] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -27,6 +28,17 @@ export default function AuthStatus() {
 
     if (token && email) {
       setUserEmail(email);
+      // fetch /api/me to determine roles
+      (async () => {
+        try {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me`, { headers: { Authorization: `Bearer ${token}` } });
+          if (!res.ok) return;
+          const j = await res.json();
+          if (j.roles && Array.isArray(j.roles) && j.roles.includes('ROLE_TUTOR')) setIsTutor(true);
+        } catch (e) {
+          // ignore
+        }
+      })();
     } else {
       setUserEmail(null);
     }
@@ -49,6 +61,7 @@ export default function AuthStatus() {
     return (
       <div>
         Вы вошли как: {userEmail} <Link href="/dashboard">Личный кабинет</Link>{' '}
+        {isTutor && (<> | <Link href="/tutor/profile">Мой профиль репетитора</Link></>)}{' '}
         <button type="button" onClick={handleLogout}>Выйти</button>
       </div>
     );
