@@ -33,8 +33,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Patch(
             inputFormats: ['json' => ['application/merge-patch+json']],
-            security: "is_granted('ROLE_TUTOR') and object.getUser().getId() == user.getId()",
-            securityMessage: 'Only the profile owner can patch this tutor profile.'
+            security: "is_granted('ROLE_ADMIN') or (is_granted('ROLE_TUTOR') and object.getUser().getId() == user.getId())",
+            securityMessage: 'Only the profile owner or an admin can patch this tutor profile.'
         ),
         new Delete(
             security: "is_granted('ROLE_TUTOR') and object.getUser().getId() == user.getId()",

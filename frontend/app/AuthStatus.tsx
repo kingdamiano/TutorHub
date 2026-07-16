@@ -20,6 +20,7 @@ export default function AuthStatus() {
   const pathname = usePathname();
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [isTutor, setIsTutor] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -34,7 +35,10 @@ export default function AuthStatus() {
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me`, { headers: { Authorization: `Bearer ${token}` } });
           if (!res.ok) return;
           const j = await res.json();
-          if (j.roles && Array.isArray(j.roles) && j.roles.includes('ROLE_TUTOR')) setIsTutor(true);
+          if (j.roles && Array.isArray(j.roles)) {
+            if (j.roles.includes('ROLE_TUTOR')) setIsTutor(true);
+            if (j.roles.includes('ROLE_ADMIN')) setIsAdmin(true);
+          }
         } catch (e) {
           // ignore
         }
@@ -62,6 +66,7 @@ export default function AuthStatus() {
       <div>
         Вы вошли как: {userEmail} <Link href="/dashboard">Личный кабинет</Link>{' '}
         {isTutor && (<> | <Link href="/tutor/profile">Мой профиль репетитора</Link></>)}{' '}
+        {isAdmin && (<> | <Link href="/admin">Модерация</Link></>)}{' '}
         <button type="button" onClick={handleLogout}>Выйти</button>
       </div>
     );
