@@ -26,7 +26,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             security: "is_granted('ROLE_STUDENT')",
             securityPostDenormalize: "is_granted('ROLE_STUDENT') and object.getStudent() and object.getStudent().getId() == user.getId()",
-            securityMessage: 'Only the booking student can create a booking for themselves.'
+            securityMessage: 'Only the booking student can create a booking for themselves.',
+            validationContext: ['groups' => ['Default', 'create']]
         ),
         new Put(
             security: "(is_granted('ROLE_STUDENT') and object.getStudent() and object.getStudent().getId() == user.getId()) or (is_granted('ROLE_TUTOR') and object.getTutorProfile() and object.getTutorProfile().getUser() and object.getTutorProfile().getUser().getId() == user.getId())",
@@ -62,7 +63,7 @@ class Booking
     private ?Subject $subject = null;
 
     #[ORM\Column(type: 'datetime')]
-    #[Assert\GreaterThan('now', message: 'Booking start time must be in the future')]
+    #[Assert\GreaterThan('now', message: 'Booking start time must be in the future', groups: ['create'])]
     private ?\DateTimeInterface $startAt = null;
 
     #[ORM\Column(type: 'integer')]

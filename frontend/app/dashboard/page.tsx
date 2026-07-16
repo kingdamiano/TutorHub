@@ -28,11 +28,18 @@ type Subject = {
   name?: string;
 };
 
+type User = {
+  '@id'?: string;
+  id?: number;
+  email?: string;
+};
+
 export default function DashboardPage() {
   const [token, setToken] = useState<string | null>(null);
   const [me, setMe] = useState<any | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [enrichedBookings, setEnrichedBookings] = useState<Array<Booking & { tutor?: TutorProfile | null; subjectObj?: Subject | null }>>([]);
+  const [enrichedBookings, setEnrichedBookings] = useState<Array<Booking & { tutor?: TutorProfile | null; subjectObj?: Subject | null; studentObj?: User | null }>>([]);
+  const [processingIds, setProcessingIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -92,9 +99,11 @@ export default function DashboardPage() {
     async function enrich() {
       const tutorMap: Record<string, TutorProfile | null> = {};
       const subjectMap: Record<string, Subject | null> = {};
+      const studentMap: Record<string, User | null> = {};
 
       const tutorIris = Array.from(new Set(bookings.map((b) => b.tutorProfile).filter(Boolean) as string[]));
       const subjectIris = Array.from(new Set(bookings.map((b) => b.subject).filter(Boolean) as string[]));
+      const studentIris = Array.from(new Set(bookings.map((b) => b.student).filter(Boolean) as string[]));
 
       const tutorPromises = tutorIris.map(async (iri) => {
         try {
@@ -128,7 +137,23 @@ export default function DashboardPage() {
         }
       });
 
-      await Promise.all([...tutorPromises, ...subjectPromises]);
+        const studentPromises = studentIris.map(async (iri) => {
+          try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${iri}`, {
+              headers: { Authorization: `Bearer ${token}`, Accept: 'application/ld+json' },
+            });
+            if (!res.ok) {
+              studentMap[iri] = null;
+              return;
+            }
+            const json = await res.json();
+            studentMap[iri] = json as User;
+          } catch (e) {
+            studentMap[iri] = null;
+          }
+        });
+
+      await Promise.all([...tutorPromises, ...subjectPromises, ...studentPromises]);
 
       if (cancelled) return;
 
@@ -136,6 +161,7 @@ export default function DashboardPage() {
         ...b,
         tutor: b.tutorProfile ? tutorMap[b.tutorProfile] ?? null : null,
         subjectObj: b.subject ? subjectMap[b.subject] ?? null : null,
+        studentObj: b.student ? studentMap[b.student] ?? null : null,
       }));
 
       setEnrichedBookings(enriched);
@@ -147,6 +173,40 @@ export default function DashboardPage() {
       cancelled = true;
     };
   }, [bookings, token]);
+
+  async function updateBookingStatus(b: Booking, newStatus: string) {
+    if (!token) return;
+    const idOrIri = b['@id'] ?? (b.id ? `/api/bookings/${b.id}` : null);
+    if (!idOrIri) return;
+
+    const url = `${process.env.NEXT_PUBLIC_API_URL}${idOrIri}`;
+    const key = idOrIri;
+    setProcessingIds((s) => [...s, key]);
+    try {
+      const res = await fetch(url, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/merge-patch+json',
+          Accept: 'application/ld+json',
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      if (!res.ok) throw new Error('Failed to update booking');
+
+      // Update local state: bookings and enrichedBookings
+      const updated = (await res.json()) as any;
+
+      setBookings((prev) => prev.map((itm) => (itm['@id'] === updated['@id'] || itm.id === updated.id ? { ...itm, ...updated } : itm)));
+      setEnrichedBookings((prev) =>
+        prev.map((itm: any) => (itm['@id'] === updated['@id'] || itm.id === updated.id ? { ...itm, ...updated } : itm)),
+      );
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setProcessingIds((s) => s.filter((x) => x !== key));
+    }
+  }
 
   if (!token) {
     return (
@@ -178,6 +238,10 @@ export default function DashboardPage() {
           const anyB: any = b;
           const tutor = anyB.tutor ?? null;
           const subjectObj = anyB.subjectObj ?? null;
+          const isTutor = me?.roles?.includes('ROLE_TUTOR');
+          const studentEmail = anyB.studentObj?.email ?? b.student ?? '—';
+          const bKey = b['@id'] ?? (b.id ? `/api/bookings/${b.id}` : String(b['@id'] ?? b.id));
+
           return (
             <li key={b['@id'] ?? b.id}>
               <div>Booking: {b['@id'] ?? b.id}</div>
@@ -191,10 +255,26 @@ export default function DashboardPage() {
                   b.tutorProfile ?? '—'
                 )}
               </div>
+              <div>Студент: {studentEmail}</div>
               <div>Предмет: {subjectObj ? subjectObj.name ?? '—' : b.subject ?? '—'}</div>
               <div>Дата: {b.startAt ?? '—'}</div>
               <div>Длительность: {b.durationMinutes ?? '—'} минут</div>
               <div>Статус: {b.status ?? '—'}</div>
+
+              {isTutor && (
+                <div style={{ marginTop: 8 }}>
+                  {b.status === 'pending' && (
+                    <>
+                      <button disabled={processingIds.includes(bKey)} onClick={() => updateBookingStatus(b, 'confirmed')}>Подтвердить</button>{' '}
+                      <button disabled={processingIds.includes(bKey)} onClick={() => updateBookingStatus(b, 'cancelled')}>Отклонить</button>
+                    </>
+                  )}
+
+                  {b.status === 'confirmed' && (
+                    <button disabled={processingIds.includes(bKey)} onClick={() => updateBookingStatus(b, 'completed')}>Отметить как завершённый</button>
+                  )}
+                </div>
+              )}
             </li>
           );
         })}
