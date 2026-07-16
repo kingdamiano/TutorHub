@@ -90,8 +90,12 @@ class AvailabilityProcessor implements ProcessorInterface
             return false;
         }
 
-        return $this->secondsSinceMidnight($newStart) < $this->secondsSinceMidnight($existingEnd)
-            && $this->secondsSinceMidnight($existingStart) < $this->secondsSinceMidnight($newEnd);
+        $newStartSeconds = $this->secondsSinceMidnight($newStart);
+        $newEndSeconds = $this->secondsSinceMidnight($newEnd);
+        $existingStartSeconds = $this->secondsSinceMidnight($existingStart);
+        $existingEndSeconds = $this->secondsSinceMidnight($existingEnd);
+
+        return $newStartSeconds < $existingEndSeconds && $existingStartSeconds < $newEndSeconds;
     }
 
     private function secondsSinceMidnight(\DateTimeInterface $time): int

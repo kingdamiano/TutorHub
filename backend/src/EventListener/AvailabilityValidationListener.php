@@ -86,6 +86,18 @@ class AvailabilityValidationListener
             return false;
         }
 
-        return $newStart < $existingEnd && $existingStart < $newEnd;
+        $newStartSeconds = $this->secondsSinceMidnight($newStart);
+        $newEndSeconds = $this->secondsSinceMidnight($newEnd);
+        $existingStartSeconds = $this->secondsSinceMidnight($existingStart);
+        $existingEndSeconds = $this->secondsSinceMidnight($existingEnd);
+
+        return $newStartSeconds < $existingEndSeconds && $existingStartSeconds < $newEndSeconds;
+    }
+
+    private function secondsSinceMidnight(\DateTimeInterface $time): int
+    {
+        return ((int) $time->format('H') * 3600)
+            + ((int) $time->format('i') * 60)
+            + (int) $time->format('s');
     }
 }

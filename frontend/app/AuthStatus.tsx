@@ -65,7 +65,12 @@ export default function AuthStatus() {
     return (
       <div>
         Вы вошли как: {userEmail} <Link href="/dashboard">Личный кабинет</Link>{' '}
-        {isTutor && (<> | <Link href="/tutor/profile">Мой профиль репетитора</Link></>)}{' '}
+        {isTutor && (
+          <>
+            | <Link href="/tutor/profile">Мой профиль репетитора</Link>
+            | <Link href="/tutor/availability">Моё расписание</Link>
+          </>
+        )}{' '}
         {isAdmin && (<> | <Link href="/admin">Модерация</Link></>)}{' '}
         <button type="button" onClick={handleLogout}>Выйти</button>
       </div>
