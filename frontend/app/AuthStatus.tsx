@@ -27,13 +27,25 @@ export default function AuthStatus() {
     const token = getCookieValue('token');
     const email = getCookieValue('userEmail');
 
-    if (token && email) {
-      setUserEmail(email);
+    if (token) {
+      if (email) {
+        setUserEmail(email);
+      }
       // fetch /api/me to determine roles
       (async () => {
         try {
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me`, { headers: { Authorization: `Bearer ${token}` } });
-          if (!res.ok) return;
+          if (res.status === 401) {
+            document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+            document.cookie = 'userEmail=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+            setUserEmail(null);
+            return;
+          }
+
+          if (!res.ok) {
+            return;
+          }
+
           const j = await res.json();
           if (j.roles && Array.isArray(j.roles)) {
             if (j.roles.includes('ROLE_TUTOR')) setIsTutor(true);
@@ -41,13 +53,14 @@ export default function AuthStatus() {
           }
         } catch (e) {
           // ignore
+        } finally {
+          setIsLoaded(true);
         }
       })();
     } else {
       setUserEmail(null);
+      setIsLoaded(true);
     }
-
-    setIsLoaded(true);
   }, [pathname]);
 
   function handleLogout() {

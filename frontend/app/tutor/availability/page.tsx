@@ -39,6 +39,11 @@ function getCookieValue(name: string) {
   return match ? decodeURIComponent(match.split('=')[1]) : null;
 }
 
+function deleteCookie(name: string) {
+  if (typeof document === 'undefined') return;
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+}
+
 function normalizeTime(value: string) {
   if (!value) return value;
   return value.length === 5 ? `${value}:00` : value;
@@ -71,6 +76,7 @@ export default function TutorAvailabilityPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [sessionExpired, setSessionExpired] = useState(false);
   const [me, setMe] = useState<MeResponse | null>(null);
   const [user, setUser] = useState<UserResponse | null>(null);
   const [tutorProfileIri, setTutorProfileIri] = useState<string | null>(null);
@@ -95,12 +101,21 @@ export default function TutorAvailabilityPage() {
         const meRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me`, {
           headers: { Authorization: `Bearer ${tokenValue}` },
         });
+
+        if (meRes.status === 401) {
+          deleteCookie('token');
+          deleteCookie('userEmail');
+          setSessionExpired(true);
+          return;
+        }
+
         if (!meRes.ok) {
           setHasAccess(false);
           return;
         }
 
         const meJson = (await meRes.json()) as MeResponse;
+
         if (!meJson.roles?.includes('ROLE_TUTOR')) {
           setHasAccess(false);
           return;
@@ -187,8 +202,6 @@ export default function TutorAvailabilityPage() {
         endTime: normalizeTime(endTime),
       };
 
-      console.log('Submitting availability body:', JSON.stringify(body), body);
-
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/availabilities`, {
         method: 'POST',
         headers: {
@@ -248,6 +261,14 @@ export default function TutorAvailabilityPage() {
 
   if (loading) {
     return <div>Загрузка…</div>;
+  }
+
+  if (sessionExpired) {
+    return (
+      <div>
+        <p>Сессия истекла, пожалуйста, <Link href="/login">войдите заново</Link>.</p>
+      </div>
+    );
   }
 
   if (!hasAccess) {
