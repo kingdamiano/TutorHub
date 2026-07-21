@@ -71,28 +71,50 @@ export default function AuthStatus() {
   }
 
   if (!isLoaded) {
-    return <div>Загрузка...</div>;
+    return <div className="text-sm text-muted-foreground">Загрузка...</div>;
   }
 
   if (userEmail) {
     return (
-      <div>
-        Вы вошли как: {userEmail} <Link href="/dashboard">Личный кабинет</Link>{' '}
+      <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
+        <span className="hidden text-sm text-muted-foreground sm:inline">Вы вошли как {userEmail}</span>
+        <Link href="/dashboard" className="text-sm text-foreground/70 transition hover:text-foreground">
+          Личный кабинет
+        </Link>
         {isTutor && (
           <>
-            | <Link href="/tutor/profile">Мой профиль репетитора</Link>
-            | <Link href="/tutor/availability">Моё расписание</Link>
+            <Link href="/tutor/profile" className="text-sm text-foreground/70 transition hover:text-foreground">
+              Профиль репетитора
+            </Link>
+            <Link href="/tutor/availability" className="text-sm text-foreground/70 transition hover:text-foreground">
+              Расписание
+            </Link>
           </>
-        )}{' '}
-        {isAdmin && (<> | <Link href="/admin">Модерация</Link></>)}{' '}
-        <button type="button" onClick={handleLogout}>Выйти</button>
+        )}
+        {isAdmin && (
+          <Link href="/admin" className="text-sm text-foreground/70 transition hover:text-foreground">
+            Модерация
+          </Link>
+        )}
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="rounded-full border border-primary px-4 py-1.5 text-sm text-primary transition hover:bg-primary/10"
+        >
+          Выйти
+        </button>
       </div>
     );
   }
 
   return (
-    <div>
-      <Link href="/login">Войти</Link> | <Link href="/register">Регистрация</Link>
+    <div className="flex items-center gap-2">
+      <Link href="/login" className="rounded-full border border-border bg-background px-4 py-1.5 text-sm text-foreground transition hover:bg-secondary/70">
+        Войти
+      </Link>
+      <Link href="/register" className="rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground transition hover:opacity-90">
+        Регистрация
+      </Link>
     </div>
   );
 }

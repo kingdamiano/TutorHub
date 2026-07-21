@@ -92,17 +92,38 @@ export default function TutorProfilePage() {
 
   if (!token) {
     return (
-      <main>
-        <h1>Мой профиль репетитора</h1>
-        <p>Войдите, чтобы редактировать профиль. <Link href="/login">Войти</Link></p>
+      <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+        <section className="w-full max-w-xl rounded-3xl border border-border bg-card p-8 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
+          <h1 className="font-serif text-3xl font-semibold text-foreground">Мой профиль репетитора</h1>
+          <p className="mt-3 text-sm leading-6 text-muted-foreground">
+            Войдите, чтобы редактировать профиль.{' '}
+            <Link href="/login" className="font-medium text-primary underline-offset-4 hover:underline">
+              Войти
+            </Link>
+          </p>
+        </section>
       </main>
     );
   }
 
-  if (loading) return <div>Загрузка…</div>;
+  if (loading) {
+    return (
+      <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+        <div className="rounded-3xl border border-border bg-card px-6 py-5 text-sm text-muted-foreground shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
+          Загрузка…
+        </div>
+      </main>
+    );
+  }
 
   if (!me?.roles?.includes('ROLE_TUTOR')) {
-    return <div>Эта страница доступна только репетиторам</div>;
+    return (
+      <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+        <div className="rounded-3xl border border-border bg-card px-6 py-5 text-sm text-muted-foreground shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
+          Эта страница доступна только репетиторам
+        </div>
+      </main>
+    );
   }
 
   const handleSubjectToggle = (iri: string) => {
@@ -262,46 +283,97 @@ export default function TutorProfilePage() {
   }
 
   return (
-    <main>
-      <h1>Мой профиль репетитора</h1>
-      {message && <div>{message} {tutorProfile && tutorProfile.id && <Link href={`/tutors/${tutorProfile.id}`}>Просмотреть профиль</Link>}</div>}
-
-      <form onSubmit={tutorProfile ? handleUpdate : handleCreate}>
-        <div>
-          <label>Bio</label>
-          <br />
-          <textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={6} cols={60} />
+    <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
+      <section className="rounded-[2rem] border border-border bg-card p-6 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)] sm:p-8">
+        <div className="flex flex-col gap-3">
+          <h1 className="font-serif text-3xl font-semibold text-foreground">Мой профиль репетитора</h1>
+          <p className="text-sm leading-6 text-muted-foreground">
+            Заполните информацию о себе, городе, стоимости и предметах, чтобы другие ученики могли вас найти.
+          </p>
         </div>
 
-        <div>
-          <label>City</label>
-          <br />
-          <input value={city} onChange={(e) => setCity(e.target.value)} />
-        </div>
+        {message && (
+          <div className="mt-5 rounded-2xl border border-border bg-background/80 px-4 py-3 text-sm text-muted-foreground">
+            {message}{' '}
+            {tutorProfile && tutorProfile.id && (
+              <Link href={`/tutors/${tutorProfile.id}`} className="ml-1 font-medium text-primary underline-offset-4 hover:underline">
+                Просмотреть профиль
+              </Link>
+            )}
+          </div>
+        )}
 
-        <div>
-          <label>Price per hour</label>
-          <br />
-          <input type="number" step="0.01" value={pricePerHour} onChange={(e) => setPricePerHour(e.target.value)} />
-        </div>
+        <form onSubmit={tutorProfile ? handleUpdate : handleCreate} className="mt-6 space-y-5">
+          <div>
+            <label className="mb-2 block text-sm font-medium text-foreground">Bio</label>
+            <textarea
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              rows={6}
+              className="w-full rounded-2xl border border-border bg-background px-3 py-3 text-sm text-foreground outline-none transition focus:border-primary"
+              placeholder="Расскажите о своём опыте и подходе к обучению"
+            />
+          </div>
 
-        <div>
-          <label>Subjects</label>
-          <br />
-          {subjects.length === 0 && <div>Загрузка предметов…</div>}
-          {subjects.map((s) => (
-            <div key={s['@id'] ?? s.id}>
-              <label>
-                <input type="checkbox" checked={selectedSubjects.includes(s['@id'] ?? `/api/subjects/${s.id}`)} onChange={() => handleSubjectToggle(s['@id'] ?? `/api/subjects/${s.id}`)} /> {s.name}
-              </label>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-foreground">Город</label>
+              <input
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                className="w-full rounded-2xl border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
+                placeholder="Например, Москва"
+              />
             </div>
-          ))}
-        </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-foreground">Цена за час</label>
+              <input
+                type="number"
+                step="0.01"
+                value={pricePerHour}
+                onChange={(e) => setPricePerHour(e.target.value)}
+                className="w-full rounded-2xl border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
+                placeholder="3000"
+              />
+            </div>
+          </div>
 
-        <div style={{ marginTop: 12 }}>
-          <button type="submit" disabled={saving}>{tutorProfile ? 'Сохранить' : 'Создать профиль'}</button>
-        </div>
-      </form>
+          <div>
+            <label className="mb-2 block text-sm font-medium text-foreground">Предметы</label>
+            {subjects.length === 0 && <div className="text-sm text-muted-foreground">Загрузка предметов…</div>}
+            <div className="mt-3 flex flex-wrap gap-2">
+              {subjects.map((s) => {
+                const iri = s['@id'] ?? `/api/subjects/${s.id}`;
+                const active = selectedSubjects.includes(iri);
+                return (
+                  <label
+                    key={iri}
+                    className={`cursor-pointer rounded-full border px-3 py-2 text-sm transition ${active ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-secondary/30 text-foreground hover:bg-secondary/50'}`}
+                  >
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={active}
+                      onChange={() => handleSubjectToggle(iri)}
+                    />
+                    {s.name}
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="pt-2">
+            <button
+              type="submit"
+              disabled={saving}
+              className="rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {tutorProfile ? 'Сохранить' : 'Создать профиль'}
+            </button>
+          </div>
+        </form>
+      </section>
     </main>
   );
 }

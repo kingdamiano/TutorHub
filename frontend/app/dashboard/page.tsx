@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { CheckCircle2, CircleCheckBig, Clock3, XCircle } from 'lucide-react';
 
 type Booking = {
   '@id'?: string;
@@ -208,77 +209,197 @@ export default function DashboardPage() {
     }
   }
 
+  const statusConfig: Record<string, { label: string; className: string; icon: typeof Clock3 }> = {
+    pending: {
+      label: 'В ожидании',
+      className: 'border border-amber-200 bg-amber-50/80 text-amber-800',
+      icon: Clock3,
+    },
+    confirmed: {
+      label: 'Подтверждено',
+      className: 'border border-emerald-200 bg-emerald-50/80 text-emerald-800',
+      icon: CheckCircle2,
+    },
+    completed: {
+      label: 'Завершено',
+      className: 'border border-slate-200 bg-slate-100/80 text-slate-700',
+      icon: CircleCheckBig,
+    },
+    cancelled: {
+      label: 'Отклонено',
+      className: 'border border-rose-200 bg-rose-50/80 text-rose-700 line-through',
+      icon: XCircle,
+    },
+  };
+
   if (!token) {
     return (
-      <main>
-        <h1>Личный кабинет</h1>
-        <p>
-          Войдите, чтобы увидеть личный кабинет. <Link href="/login">Войти</Link>
-        </p>
+      <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+        <section className="w-full max-w-xl rounded-3xl border border-border bg-card p-8 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
+          <h1 className="font-serif text-3xl font-semibold text-foreground">Личный кабинет</h1>
+          <p className="mt-3 text-sm leading-6 text-muted-foreground">
+            Войдите, чтобы увидеть личный кабинет.{' '}
+            <Link href="/login" className="font-medium text-primary underline-offset-4 hover:underline">
+              Войти
+            </Link>
+          </p>
+        </section>
       </main>
     );
   }
 
   if (loading) {
-    return <div>Загрузка...</div>;
+    return (
+      <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+        <div className="rounded-3xl border border-border bg-card px-6 py-5 text-sm text-muted-foreground shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
+          Загрузка...
+        </div>
+      </main>
+    );
   }
 
   if (error) {
-    return <div>Ошибка: {error}</div>;
+    return (
+      <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+        <div className="rounded-3xl border border-amber-200 bg-amber-50 px-6 py-5 text-sm text-amber-800 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
+          Ошибка: {error}
+        </div>
+      </main>
+    );
   }
 
   return (
-    <main>
-      <h1>Личный кабинет</h1>
-      {me && <div>Вы: {me.email} (roles: {JSON.stringify(me.roles)})</div>}
-      <h2>Мои бронирования</h2>
-      {bookings.length === 0 && <div>Нет бронирований.</div>}
-      <ul>
-        {(enrichedBookings.length > 0 ? enrichedBookings : bookings).map((b) => {
-          const anyB: any = b;
-          const tutor = anyB.tutor ?? null;
-          const subjectObj = anyB.subjectObj ?? null;
-          const isTutor = me?.roles?.includes('ROLE_TUTOR');
-          const studentEmail = anyB.studentObj?.email ?? b.student ?? '—';
-          const bKey = b['@id'] ?? (b.id ? `/api/bookings/${b.id}` : String(b['@id'] ?? b.id));
+    <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+      <div className="flex flex-col gap-6">
+        <header className="flex flex-col gap-3">
+          <h1 className="font-serif text-3xl font-semibold text-foreground">Личный кабинет</h1>
+          <p className="text-sm leading-6 text-muted-foreground">
+            Здесь собраны ваши бронирования и действия по ним.
+          </p>
+        </header>
 
-          return (
-            <li key={b['@id'] ?? b.id}>
-              <div>Booking: {b['@id'] ?? b.id}</div>
-              <div>
-                Тьютор:{' '}
-                {tutor ? (
-                  <>
-                    {tutor.city ?? '—'}{tutor.bio ? ` — ${tutor.bio}` : ''}
-                  </>
-                ) : (
-                  b.tutorProfile ?? '—'
-                )}
-              </div>
-              <div>Студент: {studentEmail}</div>
-              <div>Предмет: {subjectObj ? subjectObj.name ?? '—' : b.subject ?? '—'}</div>
-              <div>Дата: {b.startAt ?? '—'}</div>
-              <div>Длительность: {b.durationMinutes ?? '—'} минут</div>
-              <div>Статус: {b.status ?? '—'}</div>
+        {me && (
+          <section className="rounded-2xl border border-border bg-card/80 p-5 shadow-sm">
+            <p className="text-sm font-medium text-foreground">Профиль</p>
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+              <span className="rounded-full border border-border bg-background px-3 py-1">{me.email}</span>
+              <span className="rounded-full border border-border bg-background px-3 py-1">
+                {me.roles?.includes('ROLE_TUTOR') ? 'Репетитор' : 'Студент'}
+              </span>
+            </div>
+          </section>
+        )}
 
-              {isTutor && (
-                <div style={{ marginTop: 8 }}>
-                  {b.status === 'pending' && (
-                    <>
-                      <button disabled={processingIds.includes(bKey)} onClick={() => updateBookingStatus(b, 'confirmed')}>Подтвердить</button>{' '}
-                      <button disabled={processingIds.includes(bKey)} onClick={() => updateBookingStatus(b, 'cancelled')}>Отклонить</button>
-                    </>
-                  )}
+        <section className="rounded-3xl border border-border bg-card p-6 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
+          <div className="mb-5 flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-xl font-semibold text-foreground">Мои бронирования</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {bookings.length === 0 ? 'Пока нет бронирований.' : 'Список актуальных заявок и уроков.'}
+              </p>
+            </div>
+          </div>
 
-                  {b.status === 'confirmed' && (
-                    <button disabled={processingIds.includes(bKey)} onClick={() => updateBookingStatus(b, 'completed')}>Отметить как завершённый</button>
-                  )}
-                </div>
-              )}
-            </li>
-          );
-        })}
-      </ul>
+          {bookings.length === 0 && (
+            <div className="rounded-2xl border border-dashed border-border bg-background/70 px-4 py-6 text-sm text-muted-foreground">
+              Нет бронирований.
+            </div>
+          )}
+
+          <div className="space-y-4">
+            {(enrichedBookings.length > 0 ? enrichedBookings : bookings).map((b) => {
+              const anyB: any = b;
+              const tutor = anyB.tutor ?? null;
+              const subjectObj = anyB.subjectObj ?? null;
+              const isTutor = me?.roles?.includes('ROLE_TUTOR');
+              const studentEmail = anyB.studentObj?.email ?? b.student ?? '—';
+              const bKey = b['@id'] ?? (b.id ? `/api/bookings/${b.id}` : String(b['@id'] ?? b.id));
+              const normalizedStatus = (b.status ?? 'pending').toLowerCase();
+              const statusInfo = statusConfig[normalizedStatus] ?? {
+                label: b.status ?? '—',
+                className: 'border border-border bg-muted/70 text-muted-foreground',
+                icon: Clock3,
+              };
+              const BadgeIcon = statusInfo.icon;
+
+              return (
+                <article key={b['@id'] ?? b.id} className="rounded-2xl border border-border bg-background/80 p-5 shadow-sm">
+                  <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                    <div className="space-y-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${statusInfo.className}`}>
+                          <BadgeIcon className="h-3.5 w-3.5" />
+                          {statusInfo.label}
+                        </span>
+                        <span className="text-sm text-muted-foreground">
+                          {subjectObj ? subjectObj.name ?? '—' : b.subject ?? '—'}
+                        </span>
+                      </div>
+                      <h3 className="font-serif text-xl font-semibold text-foreground">
+                        {tutor?.city ? `${tutor.city}` : 'Репетитор'}
+                      </h3>
+                      <p className="text-sm leading-6 text-muted-foreground">
+                        {tutor?.bio ? tutor.bio : 'Подробности доступны после уточнения.'}
+                      </p>
+                    </div>
+
+                    <div className="text-sm text-muted-foreground">
+                      <p>
+                        <span className="font-medium text-foreground">Дата:</span> {b.startAt ?? '—'}
+                      </p>
+                      <p>
+                        <span className="font-medium text-foreground">Длительность:</span> {b.durationMinutes ?? '—'} минут
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 flex flex-col gap-2 border-t border-border/70 pt-4 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between">
+                    <p>
+                      {isTutor ? `Студент: ${studentEmail}` : `Город/био репетитора: ${tutor?.city ?? '—'}${tutor?.bio ? ` · ${tutor.bio}` : ''}`}
+                    </p>
+
+                    {isTutor && (
+                      <div className="flex flex-wrap gap-2">
+                        {b.status === 'pending' && (
+                          <>
+                            <button
+                              type="button"
+                              disabled={processingIds.includes(bKey)}
+                              onClick={() => updateBookingStatus(b, 'confirmed')}
+                              className="rounded-full bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
+                            >
+                              Подтвердить
+                            </button>
+                            <button
+                              type="button"
+                              disabled={processingIds.includes(bKey)}
+                              onClick={() => updateBookingStatus(b, 'cancelled')}
+                              className="rounded-full border border-destructive/40 bg-transparent px-3 py-2 text-sm font-medium text-destructive transition hover:bg-destructive/10 disabled:cursor-not-allowed disabled:opacity-70"
+                            >
+                              Отклонить
+                            </button>
+                          </>
+                        )}
+
+                        {b.status === 'confirmed' && (
+                          <button
+                            type="button"
+                            disabled={processingIds.includes(bKey)}
+                            onClick={() => updateBookingStatus(b, 'completed')}
+                            className="rounded-full border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition hover:bg-muted disabled:cursor-not-allowed disabled:opacity-70"
+                          >
+                            Завершить
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      </div>
     </main>
   );
 }

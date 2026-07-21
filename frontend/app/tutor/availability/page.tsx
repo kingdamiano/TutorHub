@@ -260,109 +260,145 @@ export default function TutorAvailabilityPage() {
   }
 
   if (loading) {
-    return <div>Загрузка…</div>;
+    return (
+      <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+        <div className="rounded-3xl border border-border bg-card px-6 py-5 text-sm text-muted-foreground shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
+          Загрузка…
+        </div>
+      </main>
+    );
   }
 
   if (sessionExpired) {
     return (
-      <div>
-        <p>Сессия истекла, пожалуйста, <Link href="/login">войдите заново</Link>.</p>
-      </div>
+      <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+        <section className="w-full max-w-xl rounded-3xl border border-border bg-card p-8 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
+          <p className="text-sm leading-6 text-muted-foreground">
+            Сессия истекла, пожалуйста, <Link href="/login" className="font-medium text-primary underline-offset-4 hover:underline">войдите заново</Link>.
+          </p>
+        </section>
+      </main>
     );
   }
 
   if (!hasAccess) {
-    return <div>Эта страница доступна только репетиторам</div>;
+    return (
+      <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+        <div className="rounded-3xl border border-border bg-card px-6 py-5 text-sm text-muted-foreground shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
+          Эта страница доступна только репетиторам
+        </div>
+      </main>
+    );
   }
 
   if (!tutorProfileIri) {
     return (
-      <main>
-        <h1>Моё расписание</h1>
-        <p>Сначала создайте профиль репетитора</p>
-        <Link href="/tutor/profile">Перейти к созданию профиля</Link>
+      <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+        <section className="w-full max-w-xl rounded-3xl border border-border bg-card p-8 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
+          <h1 className="font-serif text-3xl font-semibold text-foreground">Моё расписание</h1>
+          <p className="mt-3 text-sm leading-6 text-muted-foreground">Сначала создайте профиль репетитора.</p>
+          <Link href="/tutor/profile" className="mt-5 inline-flex rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90">
+            Перейти к созданию профиля
+          </Link>
+        </section>
       </main>
     );
   }
 
   return (
-    <main>
-      <h1>Моё расписание</h1>
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-      {success && <div style={{ color: 'green' }}>{success}</div>}
-      <section>
-        <h2>Добавить новый слот</h2>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>
-              День недели:{' '}
-              <select value={dayOfWeek} onChange={(e) => setDayOfWeek(e.target.value)}>
+    <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+      <div className="flex flex-col gap-6">
+        <header className="space-y-2">
+          <h1 className="font-serif text-3xl font-semibold text-foreground">Моё расписание</h1>
+          <p className="text-sm leading-6 text-muted-foreground">Добавляйте и управляйте доступными слотами для уроков.</p>
+        </header>
+
+        {error && <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">{error}</div>}
+        {success && <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{success}</div>}
+
+        <section className="rounded-[2rem] border border-border bg-card p-6 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)] sm:p-8">
+          <h2 className="font-serif text-2xl font-semibold text-foreground">Добавить новый слот</h2>
+          <form onSubmit={handleSubmit} className="mt-6 grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-foreground">День недели</label>
+              <select
+                value={dayOfWeek}
+                onChange={(e) => setDayOfWeek(e.target.value)}
+                className="w-full rounded-2xl border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
+              >
                 {dayNames.map((name, index) => (
                   <option key={name} value={index}>{name}</option>
                 ))}
               </select>
-            </label>
-          </div>
-          <div>
-            <label>
-              Начало:{' '}
+            </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-foreground">Начало</label>
               <input
                 type="time"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
                 required
+                className="w-full rounded-2xl border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
               />
-            </label>
-          </div>
-          <div>
-            <label>
-              Конец:{' '}
+            </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-foreground">Конец</label>
               <input
                 type="time"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
                 required
+                className="w-full rounded-2xl border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
               />
-            </label>
-          </div>
-          <div>
-            <button type="submit" disabled={saving}>
-              {saving ? 'Сохраняем…' : 'Добавить слот'}
-            </button>
-          </div>
-        </form>
-      </section>
+            </div>
+            <div className="flex items-end">
+              <button
+                type="submit"
+                disabled={saving}
+                className="w-full rounded-full bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {saving ? 'Сохраняем…' : 'Добавить слот'}
+              </button>
+            </div>
+          </form>
+        </section>
 
-      <section>
-        <h2>Существующие слоты</h2>
-        {availabilities.length === 0 ? (
-          <div>Сейчас слотов нет</div>
-        ) : (
-          dayNames.map((name, index) => {
-            const slots = sortedGroupedByDay[index] ?? [];
-            if (slots.length === 0) return null;
-            return (
-              <div key={index}>
-                <h3>{name}</h3>
-                <ul>
-                  {slots.map((slot) => (
-                    <li key={slot.id}>
-                      {formatTime(slot.startTime)} — {formatTime(slot.endTime)}{' '}
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(slot.id)}
-                        disabled={deletingId === slot.id}
-                      >
-                        {deletingId === slot.id ? 'Удаляем…' : 'Удалить'}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            );
-          })
-        )}
-      </section>
+        <section className="rounded-[2rem] border border-border bg-card p-6 shadow-sm sm:p-8">
+          <h2 className="font-serif text-2xl font-semibold text-foreground">Существующие слоты</h2>
+          {availabilities.length === 0 ? (
+            <div className="mt-4 rounded-2xl border border-dashed border-border bg-background/70 px-4 py-6 text-sm text-muted-foreground">
+              Сейчас слотов нет.
+            </div>
+          ) : (
+            <div className="mt-6 space-y-5">
+              {dayNames.map((name, index) => {
+                const slots = sortedGroupedByDay[index] ?? [];
+                if (slots.length === 0) return null;
+                return (
+                  <div key={index}>
+                    <h3 className="mb-3 font-serif text-lg font-semibold text-foreground">{name}</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {slots.map((slot) => (
+                        <div key={slot.id} className="flex items-center gap-2 rounded-full border border-border bg-background/80 px-3 py-2 text-sm text-foreground">
+                          <span>{formatTime(slot.startTime)} — {formatTime(slot.endTime)}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(slot.id)}
+                            disabled={deletingId === slot.id}
+                            className="rounded-full border border-destructive/30 px-2 py-1 text-xs font-medium text-destructive transition hover:bg-destructive/10 disabled:cursor-not-allowed disabled:opacity-70"
+                          >
+                            {deletingId === slot.id ? 'Удаляем…' : 'Удалить'}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
+      </div>
     </main>
   );
 }
