@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useAuthModal } from '../../AuthModal';
 
 interface SubjectOption {
   iri: string;
@@ -25,6 +25,7 @@ function getCookieValue(name: string) {
 }
 
 export default function BookingForm({ tutorProfileIri, subjectOptions }: BookingFormProps) {
+  const { openAuthModal } = useAuthModal();
   const [token, setToken] = useState<string | null>(null);
   const [studentIri, setStudentIri] = useState<string | null>(null);
   const [selectedSubject, setSelectedSubject] = useState(subjectOptions[0]?.iri ?? '');
@@ -68,25 +69,26 @@ export default function BookingForm({ tutorProfileIri, subjectOptions }: Booking
 
   if (!token) {
     return (
-      <section className="rounded-3xl border border-border bg-card p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.2)]">
-        <h2 className="font-serif text-2xl font-semibold text-foreground">Забронировать урок</h2>
+      <section className="rounded-[2rem] border border-white/10 bg-white/95 p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.2)] sm:p-8">
+        <h2 className="font-sans text-2xl font-semibold text-foreground">Забронировать урок</h2>
         <p className="mt-3 text-sm leading-6 text-muted-foreground">
           Войдите, чтобы забронировать урок и выбрать удобное время.
         </p>
-        <Link
-          href="/login"
-          className="mt-5 inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+        <button
+          type="button"
+          onClick={() => openAuthModal('login')}
+          className="mt-5 inline-flex w-full items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
         >
           Войти
-        </Link>
+        </button>
       </section>
     );
   }
 
   if (subjectOptions.length === 0) {
     return (
-      <section className="rounded-3xl border border-border bg-card p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.2)]">
-        <h2 className="font-serif text-2xl font-semibold text-foreground">Забронировать урок</h2>
+      <section className="rounded-[2rem] border border-white/10 bg-white/95 p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.2)] sm:p-8">
+        <h2 className="font-sans text-2xl font-semibold text-foreground">Забронировать урок</h2>
         <p className="mt-3 text-sm text-muted-foreground">Нет доступных предметов для бронирования.</p>
       </section>
     );
@@ -135,8 +137,8 @@ export default function BookingForm({ tutorProfileIri, subjectOptions }: Booking
   }
 
   return (
-    <section className="rounded-3xl border border-border bg-card p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.2)] sm:p-8">
-      <h2 className="font-serif text-2xl font-semibold text-foreground">Забронировать урок</h2>
+    <section className="rounded-[2rem] border border-white/10 bg-white/95 p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.2)] sm:p-8">
+      <h2 className="font-sans text-2xl font-semibold text-foreground">Забронировать урок</h2>
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         <div>
           <label htmlFor="subject" className="mb-2 block text-sm font-medium text-foreground">
@@ -146,7 +148,7 @@ export default function BookingForm({ tutorProfileIri, subjectOptions }: Booking
             id="subject"
             value={selectedSubject}
             onChange={(event) => setSelectedSubject(event.target.value)}
-            className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none ring-0"
+            className="w-full rounded-2xl border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
           >
             {subjectOptions.map((subject) => (
               <option key={subject.iri} value={subject.iri}>
@@ -165,7 +167,7 @@ export default function BookingForm({ tutorProfileIri, subjectOptions }: Booking
             value={startAt}
             onChange={(event) => setStartAt(event.target.value)}
             required
-            className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none"
+            className="w-full rounded-2xl border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
           />
         </div>
         <div>
@@ -180,10 +182,14 @@ export default function BookingForm({ tutorProfileIri, subjectOptions }: Booking
             max="240"
             onChange={(event) => setDurationMinutes(event.target.value)}
             required
-            className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none"
+            className="w-full rounded-2xl border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
           />
         </div>
-        {statusMessage && <div className="rounded-xl border border-border bg-background/80 px-3 py-2 text-sm text-foreground">{statusMessage}</div>}
+        {statusMessage && (
+          <div className="rounded-2xl border border-border bg-[#F6E0B6]/20 px-3 py-3 text-sm text-foreground">
+            {statusMessage}
+          </div>
+        )}
         <button
           type="submit"
           disabled={isSubmitting}

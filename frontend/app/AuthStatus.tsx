@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { ChevronDown } from 'lucide-react';
+import { useAuthModal } from './AuthModal';
 
 function getCookieValue(name: string) {
   if (typeof document === 'undefined') {
@@ -18,23 +20,32 @@ function getCookieValue(name: string) {
 export default function AuthStatus() {
   const router = useRouter();
   const pathname = usePathname();
+  const { openAuthModal } = useAuthModal();
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [isTutor, setIsTutor] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
-    const token = getCookieValue('token');
-    const email = getCookieValue('userEmail');
+    let isActive = true;
 
-    if (token) {
-      if (email) {
-        setUserEmail(email);
-      }
-      // fetch /api/me to determine roles
-      (async () => {
+    const loadUser = async () => {
+      const token = getCookieValue('token');
+      const email = getCookieValue('userEmail');
+
+      setIsTutor(false);
+      setIsAdmin(false);
+
+      if (token) {
+        if (email) {
+          setUserEmail(email);
+        }
+
         try {
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me`, { headers: { Authorization: `Bearer ${token}` } });
+          if (!isActive) return;
+
           if (res.status === 401) {
             document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
             document.cookie = 'userEmail=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
@@ -47,6 +58,8 @@ export default function AuthStatus() {
           }
 
           const j = await res.json();
+          if (!isActive) return;
+
           if (j.roles && Array.isArray(j.roles)) {
             if (j.roles.includes('ROLE_TUTOR')) setIsTutor(true);
             if (j.roles.includes('ROLE_ADMIN')) setIsAdmin(true);
@@ -54,14 +67,45 @@ export default function AuthStatus() {
         } catch (e) {
           // ignore
         } finally {
-          setIsLoaded(true);
+          if (isActive) {
+            setIsLoaded(true);
+          }
         }
-      })();
-    } else {
-      setUserEmail(null);
-      setIsLoaded(true);
-    }
+      } else {
+        setUserEmail(null);
+        setIsLoaded(true);
+      }
+    };
+
+    loadUser();
+
+    const handleAuthChange = () => {
+      setIsLoaded(false);
+      loadUser();
+    };
+
+    window.addEventListener('auth-change', handleAuthChange);
+    return () => {
+      isActive = false;
+      window.removeEventListener('auth-change', handleAuthChange);
+    };
   }, [pathname]);
+
+  useEffect(() => {
+    if (!isMenuOpen) {
+      return;
+    }
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (!target?.closest('[data-dropdown-root]')) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [isMenuOpen]);
 
   function handleLogout() {
     document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
@@ -70,51 +114,83 @@ export default function AuthStatus() {
     router.push('/');
   }
 
+  const secondaryLinks = [
+    ...(isTutor
+      ? [
+          { href: '/tutor/profile', label: 'Профиль репетитора' },
+          { href: '/tutor/availability', label: 'Расписание' },
+        ]
+      : []),
+    ...(isAdmin ? [{ href: '/admin', label: 'Модерация' }] : []),
+  ];
+
   if (!isLoaded) {
-    return <div className="text-sm text-muted-foreground">Загрузка...</div>;
+    return <div className="text-sm text-white/70">Загрузка...</div>;
   }
 
   if (userEmail) {
     return (
-      <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
-        <span className="hidden text-sm text-muted-foreground sm:inline">Вы вошли как {userEmail}</span>
-        <Link href="/dashboard" className="text-sm text-foreground/70 transition hover:text-foreground">
-          Личный кабинет
-        </Link>
-        {isTutor && (
-          <>
-            <Link href="/tutor/profile" className="text-sm text-foreground/70 transition hover:text-foreground">
-              Профиль репетитора
-            </Link>
-            <Link href="/tutor/availability" className="text-sm text-foreground/70 transition hover:text-foreground">
-              Расписание
-            </Link>
-          </>
-        )}
-        {isAdmin && (
-          <Link href="/admin" className="text-sm text-foreground/70 transition hover:text-foreground">
-            Модерация
+      <div className="flex flex-wrap items-center justify-end gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <Link href="/dashboard" className="whitespace-nowrap text-sm font-medium text-white/80 transition-colors hover:text-white">
+            Личный кабинет
           </Link>
-        )}
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="rounded-full border border-primary px-4 py-1.5 text-sm text-primary transition hover:bg-primary/10"
-        >
-          Выйти
-        </button>
+
+          {secondaryLinks.length > 0 && (
+            <div className="group relative" data-dropdown-root>
+              <button
+                type="button"
+                onClick={() => setIsMenuOpen((prev) => !prev)}
+                className="flex items-center gap-1 whitespace-nowrap rounded-xl px-3 py-1.5 text-sm font-medium text-white/80 transition-colors hover:text-white"
+              >
+                Ещё
+                <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isMenuOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {isMenuOpen && (
+                <div className="absolute right-0 top-full z-50 mt-2 min-w-[215px] rounded-xl border border-white/10 bg-[#3D1534]/95 p-2 shadow-xl backdrop-blur">
+                  {secondaryLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block rounded-md px-3 py-2 text-sm font-medium text-white/80 transition-colors duration-200 hover:bg-[#F6E0B6]/20 hover:text-[#F6E0B6]"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="rounded-full border border-white/20 px-3.5 py-1.5 text-sm font-medium text-white/90 transition-colors hover:bg-white/10"
+          >
+            Выйти
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="flex items-center gap-2">
-      <Link href="/login" className="rounded-full border border-border bg-background px-4 py-1.5 text-sm text-foreground transition hover:bg-secondary/70">
+      <button
+        type="button"
+        onClick={() => openAuthModal('login')}
+        className="inline-flex items-center justify-center rounded-full border border-white/40 bg-white/10 px-4 py-1.5 text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/20 hover:shadow-[0_8px_24px_rgba(255,255,255,0.15)]"
+      >
         Войти
-      </Link>
-      <Link href="/register" className="rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground transition hover:opacity-90">
+      </button>
+      <button
+        type="button"
+        onClick={() => openAuthModal('register')}
+        className="inline-flex items-center justify-center rounded-full bg-[#F6E0B6] px-4 py-1.5 text-sm font-semibold text-[#3D1534] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#f9e7bf] hover:shadow-[0_8px_24px_rgba(246,224,182,0.25)]"
+      >
         Регистрация
-      </Link>
+      </button>
     </div>
   );
 }

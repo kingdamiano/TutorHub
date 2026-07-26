@@ -60,12 +60,16 @@ class TutorProfile
     private ?User $user = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
+    #[Assert\NotBlank(message: 'Bio cannot be empty')]
     #[Assert\Length(min: 1, max: 2000, minMessage: 'Bio cannot be empty', maxMessage: 'Bio must not exceed 2000 characters')]
     private ?string $bio = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Assert\NotBlank(message: 'City cannot be empty')]
     private ?string $city = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $name = null;
 
     #[ORM\Column(type: 'decimal', precision: 8, scale: 2)]
     #[Assert\Positive(message: 'Price per hour must be greater than 0')]
@@ -135,6 +139,17 @@ class TutorProfile
     public function setCity(?string $city): static
     {
         $this->city = $city;
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): static
+    {
+        $this->name = $name;
         return $this;
     }
 

@@ -45,7 +45,7 @@ export default function RegisterPage() {
   return (
     <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
       <section className="w-full max-w-md rounded-3xl border border-border bg-card p-8 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
-        <h1 className="font-serif text-3xl font-semibold text-foreground">Регистрация</h1>
+        <h1 className="font-sans text-3xl font-semibold text-foreground">Регистрация</h1>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">Создайте аккаунт и начните искать подходящего репетитора или преподавателя.</p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -59,7 +59,7 @@ export default function RegisterPage() {
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               required
-              className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
+              className="w-full rounded-[inherit] border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
             />
           </div>
           <div>
@@ -72,7 +72,7 @@ export default function RegisterPage() {
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               required
-              className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
+              className="w-full rounded-[inherit] border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
             />
           </div>
           <div>
@@ -83,7 +83,7 @@ export default function RegisterPage() {
               id="role"
               value={role}
               onChange={(event) => setRole(event.target.value)}
-              className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
+              className="w-full rounded-[inherit] border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
             >
               <option value="student">student</option>
               <option value="tutor">tutor</option>

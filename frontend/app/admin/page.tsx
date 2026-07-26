@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
 
 function getCookieValue(name: string) {
   if (typeof document === 'undefined') return null;
@@ -115,67 +114,72 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className="flex flex-col gap-3">
-        <h1 className="font-serif text-3xl font-semibold text-foreground">Модерация репетиторов</h1>
-        <p className="text-sm leading-6 text-muted-foreground">Вы вошли как: {me?.email}</p>
+    <main className="relative min-h-screen bg-[#3D1534] px-4 py-0 sm:px-6 lg:px-8">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+        <div className="absolute top-12 left-1/6 h-96 w-96 rounded-full bg-[#F6E0B6]/20 blur-3xl" />
+        <div className="absolute top-[-40px] right-0 h-96 w-96 rounded-full bg-[#3E4B8E]/25 blur-3xl" />
+        <div className="absolute bottom-8 left-1/4 h-72 w-72 rounded-full bg-[#CDE7FF]/15 blur-3xl" />
       </div>
 
-      {profiles.length === 0 && (
-        <div className="mt-6 rounded-3xl border border-dashed border-border bg-card px-6 py-8 text-sm text-muted-foreground">
-          Нет новых профилей для одобрения.
+      <div className="mx-auto relative z-10 max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-3">
+          <h1 className="font-sans text-4xl font-semibold text-white">Модерация репетиторов</h1>
+          <p className="max-w-2xl text-sm leading-6 text-white/70">Вы вошли как: {me?.email}</p>
         </div>
-      )}
 
-      <div className="mt-6 space-y-4">
-        {profiles.map((p) => {
-          const key = p['@id'] ?? `/api/tutor_profiles/${p.id}`;
-          const isProcessing = processing.includes(key);
+        {profiles.length === 0 && (
+          <div className="mt-6 rounded-3xl border border-dashed border-white/15 bg-white/10 px-6 py-8 text-sm text-[#F6E0B6] shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)] backdrop-blur-xl">
+            Нет новых профилей для одобрения.
+          </div>
+        )}
 
-          return (
-            <article key={key} className="rounded-[1.75rem] border border-border bg-card p-6 shadow-sm">
-              <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                <div className="space-y-2">
-                  <div className="flex flex-wrap gap-2">
-                    {p.city ? (
-                      <span className="rounded-full border border-border bg-secondary/30 px-3 py-1 text-sm text-foreground">
-                        {p.city}
-                      </span>
-                    ) : null}
-                    {p.pricePerHour ? (
-                      <span className="rounded-full border border-border bg-background px-3 py-1 text-sm text-muted-foreground">
-                        {p.pricePerHour} ₽/час
-                      </span>
-                    ) : null}
+        <div className="mt-6 space-y-4">
+          {profiles.map((p) => {
+            const key = p['@id'] ?? `/api/tutor_profiles/${p.id}`;
+            const isProcessing = processing.includes(key);
+
+            return (
+              <article key={key} className="rounded-[2rem] border border-white/10 bg-white/95 p-6 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.18)]">
+                <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                  <div className="space-y-3">
+                    <div className="flex flex-wrap gap-2">
+                      {p.city ? (
+                        <span className="rounded-full border border-border bg-secondary/30 px-3 py-1 text-sm text-foreground">
+                          {p.city}
+                        </span>
+                      ) : null}
+                      {p.pricePerHour ? (
+                        <span className="rounded-full border border-border bg-background px-3 py-1 text-sm text-[wheat]">
+                          {p.pricePerHour} ₽/час
+                        </span>
+                      ) : null}
+                    </div>
+                    <p className="text-sm leading-7 text-foreground">{p.bio || 'Без описания.'}</p>
                   </div>
-                  <p className="text-sm leading-7 text-muted-foreground">{p.bio || 'Без описания.'}</p>
-                </div>
 
-                <div className="flex flex-wrap items-center gap-2">
-                  <button
-                    type="button"
-                    disabled={isProcessing}
-                    onClick={() => approve(p)}
-                    className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
-                  >
-                    Одобрить
-                  </button>
-                  <button
-                    type="button"
-                    disabled={isProcessing}
-                    onClick={() => reject(p)}
-                    className="rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition hover:bg-muted disabled:cursor-not-allowed disabled:opacity-70"
-                  >
-                    Отклонить
-                  </button>
-                  <Link href={`/tutors/${p.id}`} className="text-sm font-medium text-primary underline-offset-4 hover:underline">
-                    Посмотреть
-                  </Link>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      disabled={isProcessing}
+                      onClick={() => approve(p)}
+                      className="rounded-full bg-[#3E4B8E] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#2f3a6e] disabled:cursor-not-allowed disabled:opacity-70"
+                    >
+                      Одобрить
+                    </button>
+                    <button
+                      type="button"
+                      disabled={isProcessing}
+                      onClick={() => reject(p)}
+                      className="rounded-full border border-border bg-secondary/30 px-3 py-2 text-sm font-medium text-foreground transition hover:bg-secondary/50 disabled:cursor-not-allowed disabled:opacity-70"
+                    >
+                      Отклонить
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </article>
-          );
-        })}
+              </article>
+            );
+          })}
+        </div>
       </div>
     </main>
   );

@@ -295,7 +295,7 @@ export default function TutorAvailabilityPage() {
     return (
       <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
         <section className="w-full max-w-xl rounded-3xl border border-border bg-card p-8 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
-          <h1 className="font-serif text-3xl font-semibold text-foreground">Моё расписание</h1>
+          <h1 className="font-sans text-3xl font-semibold text-foreground">Моё расписание</h1>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">Сначала создайте профиль репетитора.</p>
           <Link href="/tutor/profile" className="mt-5 inline-flex rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90">
             Перейти к созданию профиля
@@ -309,7 +309,7 @@ export default function TutorAvailabilityPage() {
     <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="flex flex-col gap-6">
         <header className="space-y-2">
-          <h1 className="font-serif text-3xl font-semibold text-foreground">Моё расписание</h1>
+          <h1 className="font-sans text-3xl font-semibold text-foreground">Моё расписание</h1>
           <p className="text-sm leading-6 text-muted-foreground">Добавляйте и управляйте доступными слотами для уроков.</p>
         </header>
 
@@ -317,14 +317,14 @@ export default function TutorAvailabilityPage() {
         {success && <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{success}</div>}
 
         <section className="rounded-[2rem] border border-border bg-card p-6 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)] sm:p-8">
-          <h2 className="font-serif text-2xl font-semibold text-foreground">Добавить новый слот</h2>
+          <h2 className="font-sans text-2xl font-semibold text-foreground">Добавить новый слот</h2>
           <form onSubmit={handleSubmit} className="mt-6 grid gap-4 sm:grid-cols-2">
             <div>
               <label className="mb-2 block text-sm font-medium text-foreground">День недели</label>
               <select
                 value={dayOfWeek}
                 onChange={(e) => setDayOfWeek(e.target.value)}
-                className="w-full rounded-2xl border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
+                className="w-full rounded-2xl border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
               >
                 {dayNames.map((name, index) => (
                   <option key={name} value={index}>{name}</option>
@@ -338,7 +338,7 @@ export default function TutorAvailabilityPage() {
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
                 required
-                className="w-full rounded-2xl border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
+                className="w-full rounded-2xl border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
               />
             </div>
             <div>
@@ -348,7 +348,7 @@ export default function TutorAvailabilityPage() {
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
                 required
-                className="w-full rounded-2xl border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
+                className="w-full rounded-2xl border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
               />
             </div>
             <div className="flex items-end">
@@ -364,7 +364,7 @@ export default function TutorAvailabilityPage() {
         </section>
 
         <section className="rounded-[2rem] border border-border bg-card p-6 shadow-sm sm:p-8">
-          <h2 className="font-serif text-2xl font-semibold text-foreground">Существующие слоты</h2>
+          <h2 className="font-sans text-2xl font-semibold text-foreground">Существующие слоты</h2>
           {availabilities.length === 0 ? (
             <div className="mt-4 rounded-2xl border border-dashed border-border bg-background/70 px-4 py-6 text-sm text-muted-foreground">
               Сейчас слотов нет.
@@ -376,7 +376,7 @@ export default function TutorAvailabilityPage() {
                 if (slots.length === 0) return null;
                 return (
                   <div key={index}>
-                    <h3 className="mb-3 font-serif text-lg font-semibold text-foreground">{name}</h3>
+                    <h3 className="mb-3 font-sans text-lg font-semibold text-foreground">{name}</h3>
                     <div className="flex flex-wrap gap-2">
                       {slots.map((slot) => (
                         <div key={slot.id} className="flex items-center gap-2 rounded-full border border-border bg-background/80 px-3 py-2 text-sm text-foreground">
