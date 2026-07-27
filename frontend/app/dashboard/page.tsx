@@ -275,7 +275,7 @@ export default function DashboardPage() {
 
   return (
     <main className="min-h-screen px-4 py-0 sm:px-6 lg:px-8">
-      <div className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-[#3D1534]">
+      <div className="relative min-h-screen left-1/2 right-1/2 -mx-[50vw] w-screen bg-[#3D1534]">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-12 left-1/6 h-96 w-96 rounded-full bg-[#F6E0B6]/20 blur-3xl" />
           <div className="absolute top-[-40px] right-0 h-96 w-96 rounded-full bg-[#3E4B8E]/25 blur-3xl" />

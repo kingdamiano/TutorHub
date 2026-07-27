@@ -2,6 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { useAuthModal } from '../../AuthModal';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface SubjectOption {
   iri: string;
@@ -29,7 +36,15 @@ export default function BookingForm({ tutorProfileIri, subjectOptions }: Booking
   const [token, setToken] = useState<string | null>(null);
   const [studentIri, setStudentIri] = useState<string | null>(null);
   const [selectedSubject, setSelectedSubject] = useState(subjectOptions[0]?.iri ?? '');
-  const [startAt, setStartAt] = useState('');
+  const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [time, setTime] = useState(() => {
+    const now = new Date();
+    const minutes = now.getMinutes();
+    const next = minutes < 30 ? 30 : 60;
+    now.setMinutes(next === 60 ? 0 : next);
+    if (next === 60) now.setHours(now.getHours() + 1);
+    return now.toTimeString().slice(0, 5);
+  });
   const [durationMinutes, setDurationMinutes] = useState('60');
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -69,7 +84,7 @@ export default function BookingForm({ tutorProfileIri, subjectOptions }: Booking
 
   if (!token) {
     return (
-      <section className="rounded-[2rem] border border-white/10 bg-white/95 p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.2)] sm:p-8">
+      <section className="rounded-2xl border border-white/10 bg-white/95 p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.2)] sm:p-8">
         <h2 className="font-sans text-2xl font-semibold text-foreground">Забронировать урок</h2>
         <p className="mt-3 text-sm leading-6 text-muted-foreground">
           Войдите, чтобы забронировать урок и выбрать удобное время.
@@ -87,7 +102,7 @@ export default function BookingForm({ tutorProfileIri, subjectOptions }: Booking
 
   if (subjectOptions.length === 0) {
     return (
-      <section className="rounded-[2rem] border border-white/10 bg-white/95 p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.2)] sm:p-8">
+      <section className="rounded-2xl border border-white/10 bg-white/95 p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.2)] sm:p-8">
         <h2 className="font-sans text-2xl font-semibold text-foreground">Забронировать урок</h2>
         <p className="mt-3 text-sm text-muted-foreground">Нет доступных предметов для бронирования.</p>
       </section>
@@ -105,6 +120,14 @@ export default function BookingForm({ tutorProfileIri, subjectOptions }: Booking
       return;
     }
 
+    if (!date || !time) {
+      setStatusMessage('Выберите дату и время начала.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    const isoStartAt = `${date}T${time}:00`;
+
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/bookings`, {
         method: 'POST',
@@ -116,7 +139,7 @@ export default function BookingForm({ tutorProfileIri, subjectOptions }: Booking
           student: studentIri,
           tutorProfile: tutorProfileIri,
           subject: selectedSubject,
-          startAt,
+          startAt: isoStartAt,
           durationMinutes: parseInt(durationMinutes, 10),
         }),
       });
@@ -137,56 +160,81 @@ export default function BookingForm({ tutorProfileIri, subjectOptions }: Booking
   }
 
   return (
-    <section className="rounded-[2rem] border border-white/10 bg-white/95 p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.2)] sm:p-8">
+    <section className="rounded-2xl border border-white/10 bg-white/95 p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.2)] sm:p-8">
       <h2 className="font-sans text-2xl font-semibold text-foreground">Забронировать урок</h2>
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         <div>
           <label htmlFor="subject" className="mb-2 block text-sm font-medium text-foreground">
             Предмет
           </label>
-          <select
-            id="subject"
-            value={selectedSubject}
-            onChange={(event) => setSelectedSubject(event.target.value)}
-            className="w-full rounded-2xl border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
-          >
-            {subjectOptions.map((subject) => (
-              <option key={subject.iri} value={subject.iri}>
-                {subject.name}
-              </option>
-            ))}
-          </select>
+          <Select value={selectedSubject} onValueChange={setSelectedSubject}>
+            <SelectTrigger id="subject">
+              <SelectValue placeholder="Выберите предмет" />
+            </SelectTrigger>
+            <SelectContent>
+              {subjectOptions.map((subject) => (
+                <SelectItem key={subject.iri} value={subject.iri}>
+                  {subject.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
-        <div>
-          <label htmlFor="startAt" className="mb-2 block text-sm font-medium text-foreground">
-            Дата и время начала
-          </label>
-          <input
-            id="startAt"
-            type="datetime-local"
-            value={startAt}
-            onChange={(event) => setStartAt(event.target.value)}
-            required
-            className="w-full rounded-2xl border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
-          />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label htmlFor="startDate" className="mb-2 block text-sm font-medium text-foreground">
+              Дата
+            </label>
+            <input
+              id="startDate"
+              type="date"
+              value={date}
+              onChange={(event) => setDate(event.target.value)}
+              required
+              className="w-full rounded-xl border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+            />
+          </div>
+          <div>
+            <label htmlFor="startTime" className="mb-2 block text-sm font-medium text-foreground">
+              Время
+            </label>
+            <Select value={time} onValueChange={setTime}>
+              <SelectTrigger id="startTime">
+                <SelectValue placeholder="Выберите время" />
+              </SelectTrigger>
+              <SelectContent>
+                {Array.from({ length: 48 }).map((_, index) => {
+                  const hours = Math.floor(index / 2);
+                  const minutes = index % 2 === 0 ? '00' : '30';
+                  const value = `${hours.toString().padStart(2, '0')}:${minutes}`;
+                  return (
+                    <SelectItem key={value} value={value}>
+                      {value}
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <div>
           <label htmlFor="durationMinutes" className="mb-2 block text-sm font-medium text-foreground">
             Длительность (минут)
           </label>
-          <input
-            id="durationMinutes"
-            type="number"
-            value={durationMinutes}
-            min="15"
-            max="240"
-            onChange={(event) => setDurationMinutes(event.target.value)}
-            required
-            className="w-full rounded-2xl border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
-          />
+          <Select value={durationMinutes} onValueChange={setDurationMinutes}>
+            <SelectTrigger id="durationMinutes">
+              <SelectValue placeholder="Длительность" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="30">30 минут</SelectItem>
+              <SelectItem value="60">60 минут</SelectItem>
+              <SelectItem value="90">90 минут</SelectItem>
+              <SelectItem value="120">120 минут</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         {statusMessage && (
-          <div className="rounded-2xl border border-border bg-[#F6E0B6]/20 px-3 py-3 text-sm text-foreground">
+          <div className="rounded-xl border border-border bg-[#F6E0B6]/20 px-3 py-3 text-sm text-foreground">
             {statusMessage}
           </div>
         )}

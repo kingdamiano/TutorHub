@@ -132,7 +132,7 @@ export default async function TutorProfilePage({ params }: TutorPageProps) {
       </div>
 
       <div className="mx-auto relative z-10 max-w-6xl">
-        <section className="rounded-[2rem] border border-white/10 bg-white/95 p-6 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)] backdrop-blur-xl sm:p-8">
+        <section className="rounded-lg border border-white/10 bg-white/95 p-6 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)] backdrop-blur-xl sm:p-8">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
             <div className="flex items-start gap-4">
               <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-[#3D1534] text-3xl font-semibold text-white shadow-sm">
@@ -154,10 +154,6 @@ export default async function TutorProfilePage({ params }: TutorPageProps) {
               </div>
             </div>
 
-            <div className="rounded-[2rem] border border-white/10 bg-white/90 p-5 text-sm text-muted-foreground shadow-sm backdrop-blur-xl sm:p-6">
-              <p className="font-medium text-foreground">Подходит для:</p>
-              <p className="mt-2">Индивидуальных занятий, подготовки к экзаменам и разбора сложных тем.</p>
-            </div>
           </div>
 
           {subjectNames.length > 0 && (
@@ -175,7 +171,7 @@ export default async function TutorProfilePage({ params }: TutorPageProps) {
         </section>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-          <section className="rounded-[2rem] border border-white/10 bg-white/95 p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.18)] backdrop-blur-xl sm:p-8">
+          <section className="rounded-lg border border-white/10 bg-white/95 p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.18)] backdrop-blur-xl sm:p-8">
             <div className="flex items-center justify-between">
               <h2 className="font-sans text-2xl font-semibold text-foreground">Отзывы</h2>
               <span className="rounded-full border border-white/10 bg-[#F6E0B6]/20 px-3 py-1 text-sm text-muted-foreground">
@@ -189,7 +185,7 @@ export default async function TutorProfilePage({ params }: TutorPageProps) {
                   const roundedRating = Math.max(0, Math.min(5, Number(review.rating) || 0));
 
                   return (
-                    <article key={review.id} className="rounded-[2rem] border border-white/10 bg-white/90 p-5 shadow-sm">
+                    <article key={review.id} className="rounded-2xl border border-white/10 bg-white/90 p-5 shadow-sm">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1 text-amber-500">
                           {Array.from({ length: 5 }).map((_, index) => (
@@ -216,7 +212,7 @@ export default async function TutorProfilePage({ params }: TutorPageProps) {
                 })}
               </div>
             ) : (
-              <div className="mt-6 rounded-[2rem] border border-dashed border-white/10 bg-white/90 p-6 text-sm text-muted-foreground">
+              <div className="mt-6 rounded-2xl border border-dashed border-white/10 bg-white/90 p-6 text-sm text-muted-foreground">
                 Отзывов пока нет — станьте первым, кто оставит впечатление о занятии.
               </div>
             )}
