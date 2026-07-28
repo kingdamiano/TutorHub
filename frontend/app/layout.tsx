@@ -5,6 +5,7 @@ import Link from 'next/link';
 import './globals.css';
 import AuthStatus from './AuthStatus';
 import { AuthModalProvider } from './AuthModal';
+import Footer from '../components/Footer';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const fraunces = Fraunces({
@@ -47,22 +48,10 @@ export default function RootLayout({
             </div>
           </header>
             {children}
+            <div className="mt-auto">
+              <Footer />
+            </div>
           </AuthModalProvider>
-          <footer className="mt-auto w-full bg-[#3D1534]">
-          <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-6 py-10 text-[#FFF4EB]/80 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-3">
-              <span className="font-sans text-lg font-semibold text-white">Study Lamp</span>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-white/80">
-              <Link href="#" className="transition hover:text-white">О платформе</Link>
-              <Link href="#" className="transition hover:text-white">Как это работает</Link>
-              <Link href="#" className="transition hover:text-white">Контакты</Link>
-            </div>
-
-            <p className="text-sm text-white/70">© 2026 Study Lamp</p>
-          </div>
-          </footer>
         </div>
       </body>
     </html>

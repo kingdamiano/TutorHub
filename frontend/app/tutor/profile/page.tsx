@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import BackgroundBlobs from '../../../components/BackgroundBlobs';
 
 type Subject = { '@id'?: string; id?: number; name?: string };
 
@@ -356,11 +357,7 @@ export default function TutorProfilePage() {
 
   const renderPageShell = (content: React.ReactNode) => (
     <main className="relative min-h-screen bg-[#3D1534] px-4 py-0 sm:px-6 lg:px-8">
-      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-        <div className="absolute top-12 left-1/6 h-96 w-96 rounded-full bg-[#F6E0B6]/20 blur-3xl" />
-        <div className="absolute top-[-40px] right-0 h-96 w-96 rounded-full bg-[#3E4B8E]/25 blur-3xl" />
-        <div className="absolute bottom-8 left-1/4 h-72 w-72 rounded-full bg-[#CDE7FF]/15 blur-3xl" />
-      </div>
+      <BackgroundBlobs className="absolute inset-0 pointer-events-none" />
       <div className="mx-auto relative z-10 max-w-[76rem] px-4 py-8 sm:px-6 lg:px-8">
         {content}
       </div>

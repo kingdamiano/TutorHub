@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { X } from 'lucide-react';
+import { X, ChevronDown } from 'lucide-react';
 
 type AuthMode = 'login' | 'register';
 
@@ -214,15 +214,18 @@ export default function AuthModal({
                 <label htmlFor="auth-role" className="mb-2 block text-sm font-medium text-slate-700">
                   Роль
                 </label>
-                <select
-                  id="auth-role"
-                  value={role}
-                  onChange={(event) => setRole(event.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-[#3D1534]"
-                >
-                  <option value="student">Ученик</option>
-                  <option value="tutor">Репетитор</option>
-                </select>
+                <div className="relative">
+                  <select
+                    id="auth-role"
+                    value={role}
+                    onChange={(event) => setRole(event.target.value)}
+                    className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 py-2.5 pr-10 text-sm text-slate-900 outline-none transition focus:border-[#3D1534]"
+                  >
+                    <option value="student">Ученик</option>
+                    <option value="tutor">Репетитор</option>
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                </div>
               </div>
             )}
 

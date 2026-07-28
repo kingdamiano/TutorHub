@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import BackgroundBlobs from '../../components/BackgroundBlobs';
 import { CheckCircle2, CircleCheckBig, Clock3, XCircle } from 'lucide-react';
 
 type Booking = {
@@ -276,11 +277,7 @@ export default function DashboardPage() {
   return (
     <main className="min-h-screen px-4 py-0 sm:px-6 lg:px-8">
       <div className="relative min-h-screen left-1/2 right-1/2 -mx-[50vw] w-screen bg-[#3D1534]">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-12 left-1/6 h-96 w-96 rounded-full bg-[#F6E0B6]/20 blur-3xl" />
-          <div className="absolute top-[-40px] right-0 h-96 w-96 rounded-full bg-[#3E4B8E]/25 blur-3xl" />
-          <div className="absolute bottom-8 left-1/4 h-72 w-72 rounded-full bg-[#CDE7FF]/15 blur-3xl" />
-        </div>
+        <BackgroundBlobs />
 
         <div className="mx-auto relative z-10 flex max-w-[76rem] flex-col gap-6 px-4 pt-10 sm:px-6 lg:px-8">
           <section className="rounded-[18px] border border-white/15 bg-transparent p-4 shadow-[0_24px_80px_-28px_rgba(15,23,42,0.35)] sm:p-6">

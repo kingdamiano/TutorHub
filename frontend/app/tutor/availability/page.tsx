@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
+import BackgroundBlobs from '@/components/BackgroundBlobs';
 import {
   Select,
   SelectContent,
@@ -275,11 +276,7 @@ export default function TutorAvailabilityPage() {
   if (loading) {
     return (
       <main className="relative min-h-screen overflow-hidden bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
-        <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-          <div className="absolute left-[-8%] top-[-10%] h-64 w-64 rounded-full bg-[#F6E0B6]/20 blur-3xl" />
-          <div className="absolute bottom-[-8%] right-[-5%] h-72 w-72 rounded-full bg-[#3E4B8E]/25 blur-3xl" />
-          <div className="absolute left-[45%] top-[20%] h-40 w-40 rounded-full bg-[#CDE7FF]/15 blur-3xl" />
-        </div>
+        <BackgroundBlobs className="absolute inset-0 pointer-events-none" />
         <div className="mx-auto flex min-h-screen max-w-6xl items-center justify-center">
           <div className="rounded-3xl border border-border bg-card px-6 py-5 text-sm text-muted-foreground shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
             Загрузка…
@@ -292,11 +289,7 @@ export default function TutorAvailabilityPage() {
   if (sessionExpired) {
     return (
       <main className="relative min-h-screen overflow-hidden bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
-        <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-          <div className="absolute left-[-8%] top-[-10%] h-64 w-64 rounded-full bg-[#F6E0B6]/20 blur-3xl" />
-          <div className="absolute bottom-[-8%] right-[-5%] h-72 w-72 rounded-full bg-[#3E4B8E]/25 blur-3xl" />
-          <div className="absolute left-[45%] top-[20%] h-40 w-40 rounded-full bg-[#CDE7FF]/15 blur-3xl" />
-        </div>
+        <BackgroundBlobs className="absolute inset-0 pointer-events-none" />
         <div className="mx-auto flex min-h-screen max-w-6xl items-center justify-center">
           <section className="w-full max-w-xl rounded-3xl border border-border bg-card p-8 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
             <p className="text-sm leading-6 text-muted-foreground">
@@ -311,11 +304,7 @@ export default function TutorAvailabilityPage() {
   if (!hasAccess) {
     return (
       <main className="relative min-h-screen overflow-hidden bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
-        <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-          <div className="absolute left-[-8%] top-[-10%] h-64 w-64 rounded-full bg-[#F6E0B6]/20 blur-3xl" />
-          <div className="absolute bottom-[-8%] right-[-5%] h-72 w-72 rounded-full bg-[#3E4B8E]/25 blur-3xl" />
-          <div className="absolute left-[45%] top-[20%] h-40 w-40 rounded-full bg-[#CDE7FF]/15 blur-3xl" />
-        </div>
+        <BackgroundBlobs className="absolute inset-0 pointer-events-none" />
         <div className="mx-auto flex min-h-screen max-w-6xl items-center justify-center">
           <div className="rounded-3xl border border-border bg-card px-6 py-5 text-sm text-muted-foreground shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
             Эта страница доступна только репетиторам
@@ -328,11 +317,7 @@ export default function TutorAvailabilityPage() {
   if (!tutorProfileIri) {
     return (
       <main className="relative min-h-screen overflow-hidden bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
-        <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-          <div className="absolute left-[-8%] top-[-10%] h-64 w-64 rounded-full bg-[#F6E0B6]/20 blur-3xl" />
-          <div className="absolute bottom-[-8%] right-[-5%] h-72 w-72 rounded-full bg-[#3E4B8E]/25 blur-3xl" />
-          <div className="absolute left-[45%] top-[20%] h-40 w-40 rounded-full bg-[#CDE7FF]/15 blur-3xl" />
-        </div>
+        <BackgroundBlobs className="absolute inset-0 pointer-events-none" />
         <div className="mx-auto flex min-h-screen max-w-6xl items-center justify-center">
           <section className="w-full max-w-xl rounded-3xl border border-border bg-card p-8 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
             <h1 className="font-sans text-3xl font-semibold text-foreground">Моё расписание</h1>
@@ -348,11 +333,7 @@ export default function TutorAvailabilityPage() {
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
-      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute left-[-8%] top-[-10%] h-64 w-64 rounded-full bg-[#F6E0B6]/20 blur-3xl" />
-        <div className="absolute bottom-[-8%] right-[-5%] h-72 w-72 rounded-full bg-[#3E4B8E]/25 blur-3xl" />
-        <div className="absolute left-[45%] top-[20%] h-40 w-40 rounded-full bg-[#CDE7FF]/15 blur-3xl" />
-      </div>
+      <BackgroundBlobs className="absolute inset-0 pointer-events-none" />
       <div className="mx-auto flex max-w-6xl flex-col gap-6">
         <header className="space-y-2">
           <h1 className="font-sans text-4xl font-semibold tracking-tight text-white">Моё расписание</h1>

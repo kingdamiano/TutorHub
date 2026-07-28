@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import BackgroundBlobs from '../../components/BackgroundBlobs';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -44,7 +45,8 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-start justify-center bg-[#3D1534] px-4 pt-28 pb-4 sm:px-6 lg:px-8">
+    <main className="relative flex min-h-screen items-start justify-center overflow-hidden bg-[#3D1534] px-4 pt-28 pb-4 sm:px-6 lg:px-8">
+      <BackgroundBlobs className="absolute inset-0 pointer-events-none" />
       <section className="mt-20 w-full max-w-xl rounded-[28px] border border-slate-200 bg-white p-9 shadow-[0_24px_80px_-24px_rgba(15,23,42,0.35)]">
         <div className="flex gap-2 rounded-full border border-slate-200 bg-slate-50 p-1">
           <button

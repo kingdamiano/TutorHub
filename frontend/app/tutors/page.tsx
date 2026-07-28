@@ -1,4 +1,5 @@
 import TutorGrid from '../../components/TutorGrid';
+import BackgroundBlobs from '../../components/BackgroundBlobs';
 import { buildApiUrl } from '@/lib/api';
 
 async function fetchTutors() {
@@ -87,11 +88,7 @@ export default async function TutorsPage() {
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#3D1534] text-[#3D1534]">
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute left-[-8%] top-[-10%] h-64 w-64 rounded-full bg-[#F6E0B6]/30 blur-3xl" />
-        <div className="absolute bottom-[-8%] right-[-5%] h-72 w-72 rounded-full bg-[#3D1534]/10 blur-3xl" />
-        <div className="absolute left-[45%] top-[20%] h-40 w-40 rounded-full bg-[#5A5FB0]/10 blur-3xl" />
-      </div>
+      <BackgroundBlobs className="absolute inset-0 pointer-events-none" />
 
       <div className="mx-auto flex max-w-[calc(80rem-20px)] flex-col px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <section className="rounded-[2rem] border border-[#3D1534]/10 bg-[#FFF4EB] p-6 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)] sm:p-8">
