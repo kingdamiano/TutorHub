@@ -238,7 +238,7 @@ export default function DashboardPage() {
 
   if (!token) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+      <main className="mx-auto flex min-h-screen max-w-[76rem] items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
         <section className="w-full max-w-xl rounded-[18px] border border-white/20 bg-[radial-gradient(circle_at_top_left,_rgba(246,224,182,0.28),_transparent_42%),linear-gradient(135deg,_#3D1534_0%,_#4A2A4A_100%)] p-8 shadow-[0_24px_80px_-28px_rgba(15,23,42,0.35)]">
           <p className="text-sm font-medium uppercase tracking-[0.24em] text-[#F6E0B6]">Личный кабинет</p>
           <h1 className="mt-3 font-sans text-3xl font-semibold text-white">Войдите, чтобы открыть персональную панель</h1>
@@ -255,7 +255,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+      <main className="mx-auto flex min-h-screen max-w-[76rem] items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
         <div className="rounded-[18px] border border-white/20 bg-[#FFF4EB]/95 px-6 py-5 text-sm text-[#3D1534] shadow-[0_24px_80px_-28px_rgba(15,23,42,0.35)]">
           Загрузка...
         </div>
@@ -265,7 +265,7 @@ export default function DashboardPage() {
 
   if (error) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+      <main className="mx-auto flex min-h-screen max-w-[76rem] items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
         <div className="rounded-[18px] border border-amber-200 bg-amber-50 px-6 py-5 text-sm text-amber-800 shadow-[0_24px_80px_-28px_rgba(15,23,42,0.35)]">
           Ошибка: {error}
         </div>
@@ -282,7 +282,7 @@ export default function DashboardPage() {
           <div className="absolute bottom-8 left-1/4 h-72 w-72 rounded-full bg-[#CDE7FF]/15 blur-3xl" />
         </div>
 
-        <div className="mx-auto relative z-10 flex max-w-6xl flex-col gap-6 px-4 pt-10 sm:px-6 lg:px-8">
+        <div className="mx-auto relative z-10 flex max-w-[76rem] flex-col gap-6 px-4 pt-10 sm:px-6 lg:px-8">
           <section className="rounded-[18px] border border-white/15 bg-transparent p-4 shadow-[0_24px_80px_-28px_rgba(15,23,42,0.35)] sm:p-6">
             <div className="flex flex-col gap-3">
               <div className="max-w-2xl">

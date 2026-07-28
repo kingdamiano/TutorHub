@@ -119,7 +119,7 @@ export default function TutorProfilePage() {
 
   if (!token) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+      <main className="mx-auto flex min-h-screen max-w-[76rem] items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
         <section className="w-full max-w-xl rounded-3xl border border-border bg-card p-8 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
           <h1 className="font-sans text-3xl font-semibold text-foreground">Мой профиль репетитора</h1>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
@@ -135,7 +135,7 @@ export default function TutorProfilePage() {
 
   if (loading) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+      <main className="mx-auto flex min-h-screen max-w-[76rem] items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
         <div className="rounded-3xl border border-border bg-card px-6 py-5 text-sm text-muted-foreground shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
           Загрузка…
         </div>
@@ -145,7 +145,7 @@ export default function TutorProfilePage() {
 
   if (!me?.roles?.includes('ROLE_TUTOR')) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+      <main className="mx-auto flex min-h-screen max-w-[76rem] items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
         <div className="rounded-3xl border border-border bg-card px-6 py-5 text-sm text-muted-foreground shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
           Эта страница доступна только репетиторам
         </div>
@@ -361,14 +361,14 @@ export default function TutorProfilePage() {
         <div className="absolute top-[-40px] right-0 h-96 w-96 rounded-full bg-[#3E4B8E]/25 blur-3xl" />
         <div className="absolute bottom-8 left-1/4 h-72 w-72 rounded-full bg-[#CDE7FF]/15 blur-3xl" />
       </div>
-      <div className="mx-auto relative z-10 max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto relative z-10 max-w-[76rem] px-4 py-8 sm:px-6 lg:px-8">
         {content}
       </div>
     </main>
   );
 
   return renderPageShell(
-    <section className="rounded-[2rem] border border-border bg-card p-6 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)] sm:p-8">
+    <section className="rounded-[2rem] border border-border bg-[#FFF4EB] p-6 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)] sm:p-8">
       <div className="flex flex-col gap-3">
         <h1 className="font-sans text-3xl font-semibold text-foreground">Мой профиль репетитора</h1>
         <p className="text-sm leading-6 text-muted-foreground">
@@ -461,7 +461,7 @@ export default function TutorProfilePage() {
               return (
                 <label
                   key={iri}
-                  className={`cursor-pointer rounded-full border px-3 py-2 text-sm font-medium transition ${active ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-secondary/30 text-foreground hover:bg-secondary/50'}`}
+                  className={`cursor-pointer rounded-full border px-3 py-2 text-sm font-medium transition ${active ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-white text-[#3D1534] hover:bg-[#F6E0B6] hover:text-[#3D1534]'}`}
                 >
                   <input
                     type="checkbox"

@@ -261,9 +261,16 @@ export default function TutorAvailabilityPage() {
 
   if (loading) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
-        <div className="rounded-3xl border border-border bg-card px-6 py-5 text-sm text-muted-foreground shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
-          Загрузка…
+      <main className="relative min-h-screen overflow-hidden bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
+        <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+          <div className="absolute left-[-8%] top-[-10%] h-64 w-64 rounded-full bg-[#F6E0B6]/20 blur-3xl" />
+          <div className="absolute bottom-[-8%] right-[-5%] h-72 w-72 rounded-full bg-[#3E4B8E]/25 blur-3xl" />
+          <div className="absolute left-[45%] top-[20%] h-40 w-40 rounded-full bg-[#CDE7FF]/15 blur-3xl" />
+        </div>
+        <div className="mx-auto flex min-h-screen max-w-6xl items-center justify-center">
+          <div className="rounded-3xl border border-border bg-card px-6 py-5 text-sm text-muted-foreground shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
+            Загрузка…
+          </div>
         </div>
       </main>
     );
@@ -271,21 +278,35 @@ export default function TutorAvailabilityPage() {
 
   if (sessionExpired) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
-        <section className="w-full max-w-xl rounded-3xl border border-border bg-card p-8 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
-          <p className="text-sm leading-6 text-muted-foreground">
-            Сессия истекла, пожалуйста, <Link href="/login" className="font-medium text-primary underline-offset-4 hover:underline">войдите заново</Link>.
-          </p>
-        </section>
+      <main className="relative min-h-screen overflow-hidden bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
+        <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+          <div className="absolute left-[-8%] top-[-10%] h-64 w-64 rounded-full bg-[#F6E0B6]/20 blur-3xl" />
+          <div className="absolute bottom-[-8%] right-[-5%] h-72 w-72 rounded-full bg-[#3E4B8E]/25 blur-3xl" />
+          <div className="absolute left-[45%] top-[20%] h-40 w-40 rounded-full bg-[#CDE7FF]/15 blur-3xl" />
+        </div>
+        <div className="mx-auto flex min-h-screen max-w-6xl items-center justify-center">
+          <section className="w-full max-w-xl rounded-3xl border border-border bg-card p-8 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
+            <p className="text-sm leading-6 text-muted-foreground">
+              Сессия истекла, пожалуйста, <Link href="/login" className="font-medium text-primary underline-offset-4 hover:underline">войдите заново</Link>.
+            </p>
+          </section>
+        </div>
       </main>
     );
   }
 
   if (!hasAccess) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
-        <div className="rounded-3xl border border-border bg-card px-6 py-5 text-sm text-muted-foreground shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
-          Эта страница доступна только репетиторам
+      <main className="relative min-h-screen overflow-hidden bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
+        <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+          <div className="absolute left-[-8%] top-[-10%] h-64 w-64 rounded-full bg-[#F6E0B6]/20 blur-3xl" />
+          <div className="absolute bottom-[-8%] right-[-5%] h-72 w-72 rounded-full bg-[#3E4B8E]/25 blur-3xl" />
+          <div className="absolute left-[45%] top-[20%] h-40 w-40 rounded-full bg-[#CDE7FF]/15 blur-3xl" />
+        </div>
+        <div className="mx-auto flex min-h-screen max-w-6xl items-center justify-center">
+          <div className="rounded-3xl border border-border bg-card px-6 py-5 text-sm text-muted-foreground shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
+            Эта страница доступна только репетиторам
+          </div>
         </div>
       </main>
     );
@@ -293,30 +314,41 @@ export default function TutorAvailabilityPage() {
 
   if (!tutorProfileIri) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
-        <section className="w-full max-w-xl rounded-3xl border border-border bg-card p-8 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
-          <h1 className="font-sans text-3xl font-semibold text-foreground">Моё расписание</h1>
-          <p className="mt-3 text-sm leading-6 text-muted-foreground">Сначала создайте профиль репетитора.</p>
-          <Link href="/tutor/profile" className="mt-5 inline-flex rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90">
-            Перейти к созданию профиля
-          </Link>
-        </section>
+      <main className="relative min-h-screen overflow-hidden bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
+        <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+          <div className="absolute left-[-8%] top-[-10%] h-64 w-64 rounded-full bg-[#F6E0B6]/20 blur-3xl" />
+          <div className="absolute bottom-[-8%] right-[-5%] h-72 w-72 rounded-full bg-[#3E4B8E]/25 blur-3xl" />
+          <div className="absolute left-[45%] top-[20%] h-40 w-40 rounded-full bg-[#CDE7FF]/15 blur-3xl" />
+        </div>
+        <div className="mx-auto flex min-h-screen max-w-6xl items-center justify-center">
+          <section className="w-full max-w-xl rounded-3xl border border-border bg-card p-8 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
+            <h1 className="font-sans text-3xl font-semibold text-foreground">Моё расписание</h1>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">Сначала создайте профиль репетитора.</p>
+            <Link href="/tutor/profile" className="mt-5 inline-flex rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90">
+              Перейти к созданию профиля
+            </Link>
+          </section>
+        </div>
       </main>
     );
   }
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className="flex flex-col gap-6">
+    <main className="relative min-h-screen overflow-hidden bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute left-[-8%] top-[-10%] h-64 w-64 rounded-full bg-[#F6E0B6]/20 blur-3xl" />
+        <div className="absolute bottom-[-8%] right-[-5%] h-72 w-72 rounded-full bg-[#3E4B8E]/25 blur-3xl" />
+        <div className="absolute left-[45%] top-[20%] h-40 w-40 rounded-full bg-[#CDE7FF]/15 blur-3xl" />
+      </div>
+      <div className="mx-auto flex max-w-[72rem] flex-col gap-6">
         <header className="space-y-2">
-          <h1 className="font-sans text-3xl font-semibold text-foreground">Моё расписание</h1>
-          <p className="text-sm leading-6 text-muted-foreground">Добавляйте и управляйте доступными слотами для уроков.</p>
+          <h1 className="font-sans text-3xl font-semibold text-white">Моё расписание</h1>
         </header>
 
         {error && <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">{error}</div>}
         {success && <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{success}</div>}
 
-        <section className="rounded-[2rem] border border-border bg-card p-6 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)] sm:p-8">
+        <section className="rounded-[2rem] border border-border bg-[#FFF4EB] p-5 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)] sm:p-6">
           <h2 className="font-sans text-2xl font-semibold text-foreground">Добавить новый слот</h2>
           <form onSubmit={handleSubmit} className="mt-6 grid gap-4 sm:grid-cols-2">
             <div>
@@ -363,10 +395,10 @@ export default function TutorAvailabilityPage() {
           </form>
         </section>
 
-        <section className="rounded-[2rem] border border-border bg-card p-6 shadow-sm sm:p-8">
+        <section className="rounded-[2rem] border border-border bg-[#FFF4EB] p-6 shadow-sm sm:p-8">
           <h2 className="font-sans text-2xl font-semibold text-foreground">Существующие слоты</h2>
           {availabilities.length === 0 ? (
-            <div className="mt-4 rounded-2xl border border-dashed border-border bg-background/70 px-4 py-6 text-sm text-muted-foreground">
+            <div className="mt-4 rounded-2xl border border-dashed border-border bg-[#FFF4EB] px-4 py-6 text-sm text-muted-foreground">
               Сейчас слотов нет.
             </div>
           ) : (
@@ -379,7 +411,7 @@ export default function TutorAvailabilityPage() {
                     <h3 className="mb-3 font-sans text-lg font-semibold text-foreground">{name}</h3>
                     <div className="flex flex-wrap gap-2">
                       {slots.map((slot) => (
-                        <div key={slot.id} className="flex items-center gap-2 rounded-full border border-border bg-background/80 px-3 py-2 text-sm text-foreground">
+                        <div key={slot.id} className="flex items-center gap-2 rounded-full border border-border bg-[#FFF4EB] px-3 py-2 text-sm text-foreground">
                           <span>{formatTime(slot.startTime)} — {formatTime(slot.endTime)}</span>
                           <button
                             type="button"
