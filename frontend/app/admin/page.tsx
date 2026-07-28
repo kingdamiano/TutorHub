@@ -121,7 +121,7 @@ export default function AdminPage() {
         <div className="absolute bottom-8 left-1/4 h-72 w-72 rounded-full bg-[#CDE7FF]/15 blur-3xl" />
       </div>
 
-      <div className="mx-auto relative z-10 max-w-[76rem] px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto relative z-10 max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-3">
           <h1 className="font-sans text-4xl font-semibold text-white">Модерация репетиторов</h1>
           <p className="max-w-2xl text-sm leading-6 text-white/70">Вы вошли как: {me?.email}</p>

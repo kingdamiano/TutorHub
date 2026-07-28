@@ -2,6 +2,13 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 type AvailabilitySlot = {
   id: number;
@@ -30,6 +37,12 @@ const dayNames = [
   'Суббота',
   'Воскресенье',
 ];
+
+const timeOptions = Array.from({ length: 48 }, (_, index) => {
+  const hours = Math.floor(index / 2);
+  const minutes = index % 2 === 0 ? '00' : '30';
+  return `${hours.toString().padStart(2, '0')}:${minutes}`;
+});
 
 function getCookieValue(name: string) {
   if (typeof document === 'undefined') return null;
@@ -340,9 +353,9 @@ export default function TutorAvailabilityPage() {
         <div className="absolute bottom-[-8%] right-[-5%] h-72 w-72 rounded-full bg-[#3E4B8E]/25 blur-3xl" />
         <div className="absolute left-[45%] top-[20%] h-40 w-40 rounded-full bg-[#CDE7FF]/15 blur-3xl" />
       </div>
-      <div className="mx-auto flex max-w-[72rem] flex-col gap-6">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6">
         <header className="space-y-2">
-          <h1 className="font-sans text-3xl font-semibold text-white">Моё расписание</h1>
+          <h1 className="font-sans text-4xl font-semibold tracking-tight text-white">Моё расписание</h1>
         </header>
 
         {error && <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">{error}</div>}
@@ -353,35 +366,48 @@ export default function TutorAvailabilityPage() {
           <form onSubmit={handleSubmit} className="mt-6 grid gap-4 sm:grid-cols-2">
             <div>
               <label className="mb-2 block text-sm font-medium text-foreground">День недели</label>
-              <select
-                value={dayOfWeek}
-                onChange={(e) => setDayOfWeek(e.target.value)}
-                className="w-full rounded-2xl border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
-              >
-                {dayNames.map((name, index) => (
-                  <option key={name} value={index}>{name}</option>
-                ))}
-              </select>
+              <Select value={dayOfWeek} onValueChange={setDayOfWeek}>
+                <SelectTrigger id="dayOfWeek">
+                  <SelectValue placeholder="Выберите день" />
+                </SelectTrigger>
+                <SelectContent>
+                  {dayNames.map((name, index) => (
+                    <SelectItem key={name} value={String(index)}>
+                      {name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <label className="mb-2 block text-sm font-medium text-foreground">Начало</label>
-              <input
-                type="time"
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
-                required
-                className="w-full rounded-2xl border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
-              />
+              <Select value={startTime} onValueChange={setStartTime}>
+                <SelectTrigger id="startTime">
+                  <SelectValue placeholder="Выберите время" />
+                </SelectTrigger>
+                <SelectContent>
+                  {timeOptions.map((value) => (
+                    <SelectItem key={value} value={value}>
+                      {value}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <label className="mb-2 block text-sm font-medium text-foreground">Конец</label>
-              <input
-                type="time"
-                value={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
-                required
-                className="w-full rounded-2xl border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
-              />
+              <Select value={endTime} onValueChange={setEndTime}>
+                <SelectTrigger id="endTime">
+                  <SelectValue placeholder="Выберите время" />
+                </SelectTrigger>
+                <SelectContent>
+                  {timeOptions.map((value) => (
+                    <SelectItem key={value} value={value}>
+                      {value}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="flex items-end">
               <button
@@ -398,7 +424,7 @@ export default function TutorAvailabilityPage() {
         <section className="rounded-[2rem] border border-border bg-[#FFF4EB] p-6 shadow-sm sm:p-8">
           <h2 className="font-sans text-2xl font-semibold text-foreground">Существующие слоты</h2>
           {availabilities.length === 0 ? (
-            <div className="mt-4 rounded-2xl border border-dashed border-border bg-[#FFF4EB] px-4 py-6 text-sm text-muted-foreground">
+            <div className="mt-4 rounded-[2rem] border border-white/20 bg-[#3D1534]/70 px-6 py-8 text-sm text-[#F6E0B6] shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)] backdrop-blur-xl">
               Сейчас слотов нет.
             </div>
           ) : (

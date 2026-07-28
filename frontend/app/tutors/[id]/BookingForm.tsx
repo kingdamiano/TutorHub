@@ -191,7 +191,7 @@ export default function BookingForm({ tutorProfileIri, subjectOptions }: Booking
               value={date}
               onChange={(event) => setDate(event.target.value)}
               required
-              className="w-full rounded-xl border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+              className="h-12 w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
             />
           </div>
           <div>
