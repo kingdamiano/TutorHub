@@ -86,23 +86,24 @@ export default async function TutorsPage() {
   }));
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#0F0A14] text-white">
+    <main className="relative min-h-screen overflow-hidden bg-[#3D1534] text-[#3D1534]">
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute left-[-8%] top-[-10%] h-64 w-64 rounded-full bg-[#F6E0B6]/20 blur-3xl" />
-        <div className="absolute bottom-[-8%] right-[-5%] h-72 w-72 rounded-full bg-[#3D1534]/40 blur-3xl" />
-        <div className="absolute left-[45%] top-[20%] h-40 w-40 rounded-full bg-[#5A5FB0]/20 blur-3xl" />
+        <div className="absolute left-[-8%] top-[-10%] h-64 w-64 rounded-full bg-[#F6E0B6]/30 blur-3xl" />
+        <div className="absolute bottom-[-8%] right-[-5%] h-72 w-72 rounded-full bg-[#3D1534]/10 blur-3xl" />
+        <div className="absolute left-[45%] top-[20%] h-40 w-40 rounded-full bg-[#5A5FB0]/10 blur-3xl" />
       </div>
 
-      <div className="mx-auto flex max-w-7xl flex-col px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-        <header className="mb-8 max-w-3xl">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-[#F6E0B6]">TutorHub</p>
-          <h1 className="text-3xl font-semibold sm:text-4xl">Каталог репетиторов</h1>
-          <p className="mt-3 text-sm text-slate-300 sm:text-base">
-            Выбирайте преподавателей по предметам, городу и тарифу — всё в одном аккуратном каталоге.
-          </p>
-        </header>
+      <div className="mx-auto flex max-w-[calc(80rem-20px)] flex-col px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        <section className="rounded-[2rem] border border-[#3D1534]/10 bg-[#FFF4EB] p-6 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)] sm:p-8">
+          <header className="mb-5 max-w-3xl">
+            <h1 className="text-3xl font-semibold sm:text-4xl text-[#3D1534]">Каталог репетиторов</h1>
+            <p className="mt-3 text-sm text-[#3D1534]/80 sm:text-base">
+              Выбирайте преподавателей по предметам, городу и тарифу — всё в одном аккуратном каталоге.
+            </p>
+          </header>
 
-        <TutorGrid tutors={resolvedTutors} />
+          <TutorGrid tutors={resolvedTutors} />
+        </section>
       </div>
     </main>
   );

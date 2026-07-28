@@ -370,8 +370,8 @@ export default function TutorProfilePage() {
   return renderPageShell(
     <section className="rounded-[2rem] border border-border bg-[#FFF4EB] p-6 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)] sm:p-8">
       <div className="flex flex-col gap-3">
-        <h1 className="font-sans text-3xl font-semibold text-foreground">Мой профиль репетитора</h1>
-        <p className="text-sm leading-6 text-muted-foreground">
+        <h1 className="font-sans text-3xl font-semibold text-[#3D1534]">Мой профиль репетитора</h1>
+        <p className="text-sm leading-6 text-[#3D1534]/80">
           Заполните информацию о себе, городе, стоимости и предметах, чтобы другие ученики могли вас найти.
         </p>
       </div>

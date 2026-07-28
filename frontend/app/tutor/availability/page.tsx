@@ -361,7 +361,7 @@ export default function TutorAvailabilityPage() {
         {error && <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">{error}</div>}
         {success && <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{success}</div>}
 
-        <section className="rounded-[2rem] border border-border bg-[#FFF4EB] p-5 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)] sm:p-6">
+        <section className="rounded-[1.25rem] border border-white/10 bg-[#FFF4EB] p-5 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.2)] sm:p-6">
           <h2 className="font-sans text-2xl font-semibold text-foreground">Добавить новый слот</h2>
           <form onSubmit={handleSubmit} className="mt-6 grid gap-4 sm:grid-cols-2">
             <div>
@@ -421,10 +421,10 @@ export default function TutorAvailabilityPage() {
           </form>
         </section>
 
-        <section className="rounded-[2rem] border border-border bg-[#FFF4EB] p-6 shadow-sm sm:p-8">
+        <section className="rounded-[1.25rem] border border-white/10 bg-[#FFF4EB] p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.2)] sm:p-8">
           <h2 className="font-sans text-2xl font-semibold text-foreground">Существующие слоты</h2>
           {availabilities.length === 0 ? (
-            <div className="mt-4 rounded-lg border border-white/20 bg-[#3D1534]/70 px-6 py-8 text-sm text-[#F6E0B6] shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)] backdrop-blur-xl">
+            <div className="mt-4 rounded-lg border border-dashed border-[#3D1534]/15 bg-[#3D1534] px-6 py-8 text-sm text-[#F6E0B6] shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)] backdrop-blur-xl">
               Сейчас слотов нет.
             </div>
           ) : (
