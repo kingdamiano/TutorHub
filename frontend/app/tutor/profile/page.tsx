@@ -393,7 +393,7 @@ export default function TutorProfilePage() {
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full rounded-2xl border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
+            className="w-full rounded-md border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
             placeholder="Ваше имя"
           />
         </div>
@@ -403,7 +403,7 @@ export default function TutorProfilePage() {
           <input
             value={photo}
             onChange={(e) => setPhoto(e.target.value)}
-            className="w-full rounded-2xl border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
+            className="w-full rounded-md border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
             placeholder="https://example.com/photo.jpg"
           />
           {isValidPhotoUrl && (
@@ -420,7 +420,7 @@ export default function TutorProfilePage() {
             onChange={(e) => setBio(e.target.value)}
             rows={6}
             required
-            className="w-full rounded-2xl border border-border bg-white px-3 py-3 text-sm text-foreground outline-none transition focus:border-primary"
+            className="w-full rounded-md border border-border bg-white px-3 py-3 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
             placeholder="Расскажите о своём опыте и подходе к обучению"
           />
         </div>
@@ -432,7 +432,7 @@ export default function TutorProfilePage() {
               value={city}
               onChange={(e) => setCity(e.target.value)}
               required
-              className="w-full rounded-2xl border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
+              className="w-full rounded-md border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
               placeholder="Например, Москва"
             />
           </div>
@@ -445,7 +445,7 @@ export default function TutorProfilePage() {
               value={pricePerHour}
               onChange={(e) => setPricePerHour(e.target.value)}
               required
-              className="w-full rounded-2xl border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
+              className="w-full rounded-md border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
               placeholder="3000"
             />
           </div>
@@ -461,7 +461,7 @@ export default function TutorProfilePage() {
               return (
                 <label
                   key={iri}
-                  className={`cursor-pointer rounded-full border px-3 py-2 text-sm font-medium transition ${active ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-white text-[#3D1534] hover:bg-[#F6E0B6] hover:text-[#3D1534]'}`}
+                  className={`cursor-pointer rounded-md border px-3 py-2 text-sm font-medium transition ${active ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-white text-[#3D1534] hover:bg-[#F6E0B6] hover:text-[#3D1534]'}`}
                 >
                   <input
                     type="checkbox"

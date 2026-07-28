@@ -128,7 +128,7 @@ export default function AdminPage() {
         </div>
 
         {profiles.length === 0 && (
-          <div className="mt-6 rounded-3xl border border-dashed border-white/15 bg-white/10 px-6 py-8 text-sm text-[#F6E0B6] shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)] backdrop-blur-xl">
+          <div className="mt-6 rounded-lg border border-dashed border-white/15 bg-white/10 px-6 py-8 text-sm text-[#F6E0B6] shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)] backdrop-blur-xl">
             Нет новых профилей для одобрения.
           </div>
         )}
