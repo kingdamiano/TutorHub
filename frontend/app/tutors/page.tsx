@@ -1,9 +1,27 @@
 import TutorGrid from '../../components/TutorGrid';
 import BackgroundBlobs from '../../components/BackgroundBlobs';
 import { buildApiUrl } from '@/lib/api';
+import SubjectFilters from '@/components/SubjectFilters';
 
-async function fetchTutors() {
-  const res = await fetch(buildApiUrl('/api/tutor_profiles?itemsPerPage=50'), {
+type SearchParams = { [key: string]: string | string[] | undefined };
+
+type RawSubject =
+  | string
+  | {
+      id?: string | number;
+      '@id'?: string;
+      name?: string;
+      [key: string]: unknown;
+    };
+
+type RawTutor = {
+  subjects?: RawSubject[];
+  [key: string]: unknown;
+};
+
+async function fetchTutors(subjectQuery?: string): Promise<RawTutor[]> {
+  const q = subjectQuery ?? '';
+  const res = await fetch(buildApiUrl(`/api/tutor_profiles?itemsPerPage=50${q}`), {
     cache: 'no-store',
   });
   if (!res.ok) {
@@ -24,7 +42,7 @@ async function fetchSubjects() {
   return data['hydra:member'] ?? [];
 }
 
-function getSubjectId(subject: any) {
+function getSubjectId(subject: RawSubject) {
   if (typeof subject === 'string') {
     const segments = subject.split('/').filter(Boolean);
     return segments[segments.length - 1] ?? subject;
@@ -42,13 +60,13 @@ function getSubjectId(subject: any) {
   return '';
 }
 
-function resolveSubjects(tutor: any, subjectMap: Record<string, string>) {
+function resolveSubjects(tutor: RawTutor, subjectMap: Record<string, string>) {
   if (!Array.isArray(tutor.subjects)) {
     return [];
   }
 
   return tutor.subjects
-    .map((subject: any) => {
+    .map((subject: RawSubject | null) => {
       if (!subject) return null;
 
       if (typeof subject === 'string') {
@@ -66,22 +84,36 @@ function resolveSubjects(tutor: any, subjectMap: Record<string, string>) {
 
       return null;
     })
-    .filter(Boolean);
+    .filter(Boolean) as Array<{ '@id': string; name: string }>;
 }
 
-export default async function TutorsPage() {
-  const [tutors, subjects] = await Promise.all([fetchTutors(), fetchSubjects()]);
+export default async function TutorsPage({ searchParams }: { searchParams?: SearchParams | Promise<SearchParams> }) {
+  let params: SearchParams = {};
+  if (searchParams) {
+    if (typeof (searchParams as Promise<SearchParams>)?.then === 'function') {
+      params = await (searchParams as Promise<SearchParams>);
+    } else {
+      params = searchParams as SearchParams;
+    }
+  }
+
+  const active = params?.['subjects.id'];
+  const activeIds = Array.isArray(active) ? active : active ? [active] : [];
+  const subjectQuery = activeIds.map((id) => `&subjects.id=${encodeURIComponent(id)}`).join('');
+
+  const [tutors, subjects] = await Promise.all([fetchTutors(subjectQuery), fetchSubjects()]);
 
   const subjectMap = Object.fromEntries(
     subjects
-      .map((subject: any) => {
+      .map((subject: RawSubject) => {
         const subjectId = getSubjectId(subject);
-        return [subjectId, subject.name ?? 'Предмет'];
+        const name = typeof subject === 'string' ? 'Предмет' : subject.name ?? 'Предмет';
+        return [subjectId, name];
       })
       .filter(([id]) => Boolean(id))
   );
 
-  const resolvedTutors = tutors.map((tutor: any) => ({
+  const resolvedTutors = tutors.map((tutor) => ({
     ...tutor,
     subjects: resolveSubjects(tutor, subjectMap),
   }));
@@ -98,6 +130,15 @@ export default async function TutorsPage() {
               Выбирайте преподавателей по предметам, городу и тарифу — всё в одном аккуратном каталоге.
             </p>
           </header>
+
+          {/* Subject filters (client) */}
+          <SubjectFilters
+            subjects={subjects.map((s: RawSubject) => ({
+              id: getSubjectId(s),
+              name: typeof s === 'string' ? 'Предмет' : s.name ?? 'Предмет',
+            }))}
+            activeIds={activeIds}
+          />
 
           <TutorGrid tutors={resolvedTutors} />
         </section>
