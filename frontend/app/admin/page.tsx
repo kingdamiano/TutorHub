@@ -118,7 +118,7 @@ export default function AdminPage() {
     <main className="relative min-h-screen overflow-hidden bg-[#3D1534] px-4 py-0 sm:px-6 lg:px-8">
       <BackgroundBlobs className="absolute inset-0 pointer-events-none" />
 
-      <div className="mx-auto relative z-10 max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto relative z-10 max-w-[1215px] px-4 py-10 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-3">
           <h1 className="font-sans text-4xl font-semibold text-white">Модерация репетиторов</h1>
           <p className="max-w-2xl text-sm leading-6 text-white/70">Вы вошли как: {me?.email}</p>
