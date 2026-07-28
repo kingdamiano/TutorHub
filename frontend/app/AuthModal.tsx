@@ -218,9 +218,9 @@ export default function AuthModal({
                   id="auth-role"
                   value={role}
                   onChange={(event) => setRole(event.target.value)}
-                  className="w-full rounded-[inherit] border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-[#3D1534]"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-[#3D1534]"
                 >
-                  <option value="student">Студент</option>
+                  <option value="student">Ученик</option>
                   <option value="tutor">Репетитор</option>
                 </select>
               </div>

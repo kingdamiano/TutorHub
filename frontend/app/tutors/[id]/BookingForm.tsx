@@ -84,7 +84,7 @@ export default function BookingForm({ tutorProfileIri, subjectOptions }: Booking
 
   if (!token) {
     return (
-      <section className="rounded-xl border border-white/10 bg-white/95 p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.2)] sm:p-8">
+      <section className="rounded-[1.25rem] border border-[#3D1534]/10 bg-[#FFF4EB] p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.2)] sm:p-8">
         <h2 className="font-sans text-2xl font-semibold text-foreground">Забронировать урок</h2>
         <p className="mt-3 text-sm leading-6 text-muted-foreground">
           Войдите, чтобы забронировать урок и выбрать удобное время.
@@ -102,7 +102,7 @@ export default function BookingForm({ tutorProfileIri, subjectOptions }: Booking
 
   if (subjectOptions.length === 0) {
     return (
-      <section className="rounded-xl border border-white/10 bg-white/95 p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.2)] sm:p-8">
+      <section className="rounded-[1.25rem] border border-[#3D1534]/10 bg-[#FFF4EB] p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.2)] sm:p-8">
         <h2 className="font-sans text-2xl font-semibold text-foreground">Забронировать урок</h2>
         <p className="mt-3 text-sm text-muted-foreground">Нет доступных предметов для бронирования.</p>
       </section>
@@ -160,7 +160,7 @@ export default function BookingForm({ tutorProfileIri, subjectOptions }: Booking
   }
 
   return (
-    <section className="rounded-xl border border-white/10 bg-white/95 p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.2)] sm:p-8">
+    <section className="rounded-[1.25rem] border border-[#3D1534]/10 bg-[#FFF4EB] p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.2)] sm:p-8">
       <h2 className="font-sans text-2xl font-semibold text-foreground">Забронировать урок</h2>
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         <div>

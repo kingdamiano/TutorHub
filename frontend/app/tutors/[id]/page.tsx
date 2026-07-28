@@ -132,7 +132,7 @@ export default async function TutorProfilePage({ params }: TutorPageProps) {
       </div>
 
       <div className="mx-auto relative z-10 max-w-6xl">
-        <section className="rounded-lg border border-white/10 bg-white/95 p-6 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)] backdrop-blur-xl sm:p-8">
+        <section className="rounded-[1.25rem] border border-[#3D1534]/10 bg-[#FFF4EB] p-6 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)] backdrop-blur-xl sm:p-8">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
             <div className="flex items-start gap-4">
               <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-[#3D1534] text-3xl font-semibold text-white shadow-sm">
@@ -141,15 +141,15 @@ export default async function TutorProfilePage({ params }: TutorPageProps) {
               <div className="flex-1">
                 <div className="flex flex-wrap items-center gap-3">
                   <h1 className="font-sans text-3xl font-semibold text-foreground">{title}</h1>
-                  <span className="inline-flex items-center rounded-full border border-white/10 bg-[#3D1534]/10 px-3 py-1 text-sm text-foreground">
+                  <span className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-sm text-foreground">
                     <Star className="mr-1 h-4 w-4 fill-current text-amber-500" />
                     {rating}
                   </span>
                 </div>
-                <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">{tutor.bio ?? 'Подробное описание скоро появится.'}</p>
-                <div className="mt-4 flex flex-wrap gap-3 text-sm text-muted-foreground">
-                  <span className="rounded-full border border-white/10 bg-[#F6E0B6]/20 px-3 py-1 text-foreground">{tutor.city ?? 'Город не указан'}</span>
-                  <span className="rounded-full border border-white/10 bg-[#F6E0B6]/20 px-3 py-1 text-foreground">Цена: {price} ₽/ч</span>
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-[#3D1534]">{tutor.bio ?? 'Подробное описание скоро появится.'}</p>
+                <div className="mt-4 flex flex-wrap gap-3 text-sm text-[#3D1534]">
+                  <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-foreground">{tutor.city ?? 'Город не указан'}</span>
+                  <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-foreground">Цена: {price} ₽/ч</span>
                 </div>
               </div>
             </div>
@@ -161,7 +161,7 @@ export default async function TutorProfilePage({ params }: TutorPageProps) {
               <h2 className="font-sans text-xl font-semibold text-foreground">Предметы</h2>
               <div className="mt-3 flex flex-wrap gap-2">
                 {subjectNames.map((name, index) => (
-                  <span key={`${name}-${index}`} className="rounded-full border border-border bg-secondary/30 px-3 py-1.5 text-sm text-foreground">
+                  <span key={`${name}-${index}`} className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm text-foreground">
                     {name}
                   </span>
                 ))}
@@ -171,10 +171,10 @@ export default async function TutorProfilePage({ params }: TutorPageProps) {
         </section>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-          <section className="rounded-lg border border-white/10 bg-white/95 p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.18)] backdrop-blur-xl sm:p-8">
+          <section className="rounded-[1.25rem] border border-[#3D1534]/10 bg-[#FFF4EB] p-6 shadow-[0_20px_45px_-24px_rgba(15,23,42,0.18)] backdrop-blur-xl sm:p-8">
             <div className="flex items-center justify-between">
               <h2 className="font-sans text-2xl font-semibold text-foreground">Отзывы</h2>
-              <span className="rounded-full border border-white/10 bg-[#F6E0B6]/20 px-3 py-1 text-sm text-muted-foreground">
+              <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-sm text-[#3D1534]">
                 {reviews['hydra:member']?.length ? `${reviews['hydra:member'].length} отзывов` : 'Пока нет отзывов'}
               </span>
             </div>
@@ -185,7 +185,7 @@ export default async function TutorProfilePage({ params }: TutorPageProps) {
                   const roundedRating = Math.max(0, Math.min(5, Number(review.rating) || 0));
 
                   return (
-                    <article key={review.id} className="rounded-2xl border border-white/10 bg-white/90 p-5 shadow-sm">
+                    <article key={review.id} className="rounded-2xl border border-[#3D1534]/10 bg-[#FFF4EB] p-5 shadow-sm">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1 text-amber-500">
                           {Array.from({ length: 5 }).map((_, index) => (
@@ -199,20 +199,20 @@ export default async function TutorProfilePage({ params }: TutorPageProps) {
                             />
                           ))}
                         </div>
-                        <span className="text-sm text-muted-foreground">
+                        <span className="text-sm text-[#3D1534]">
                           {review.createdAt ? new Date(review.createdAt).toLocaleDateString('ru-RU') : '—'}
                         </span>
                       </div>
                       <p className="mt-3 text-sm leading-6 text-foreground">{review.comment ?? 'Нет комментария'}</p>
                       {review.booking?.student && (
-                        <p className="mt-3 text-sm text-muted-foreground">Студент: {review.booking.student}</p>
+                        <p className="mt-3 text-sm text-[#3D1534]">Студент: {review.booking.student}</p>
                       )}
                     </article>
                   );
                 })}
               </div>
             ) : (
-              <div className="mt-6 rounded-2xl border border-dashed border-white/10 bg-white/90 p-6 text-sm text-muted-foreground">
+              <div className="mt-6 rounded-2xl border border-dashed border-[#3D1534]/10 bg-white p-6 text-sm text-[#3D1534]">
                 Отзывов пока нет — станьте первым, кто оставит впечатление о занятии.
               </div>
             )}

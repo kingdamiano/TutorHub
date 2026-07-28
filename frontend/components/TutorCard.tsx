@@ -69,7 +69,7 @@ export default function TutorCard({ tutor, isActive }: { tutor: TutorProfile; is
   return (
     <Link
       href={`/tutors/${id}`}
-      className={`group block h-[300px] w-[calc(100%+20px)] -mx-[10px] overflow-hidden rounded-2xl border-[0.5px] border-[rgba(245,222,179,0.4)] bg-white shadow-sm transition-transform duration-200 ${
+      className={`group block h-[300px] w-[calc(100%+20px)] -mx-[10px] overflow-hidden rounded-2xl border-[0.5px] border-[rgba(245,222,179,0.4)] bg-white shadow-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl ${
         isActive ? 'scale-105 shadow-2xl' : 'scale-95'
       }`}
     >

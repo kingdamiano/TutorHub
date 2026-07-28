@@ -38,7 +38,7 @@ export default function LoginPage() {
       } else {
         setError(data.message ?? 'Ошибка входа');
       }
-    } catch (err) {
+    } catch {
       setError('Ошибка входа');
     } finally {
       setIsSubmitting(false);
@@ -46,47 +46,74 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
-      <section className="w-full max-w-md rounded-3xl border border-border bg-card p-8 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
-        <h1 className="font-sans text-3xl font-semibold text-foreground">Вход</h1>
-        <p className="mt-2 text-sm leading-6 text-muted-foreground">Войдите в аккаунт, чтобы продолжить бронирование уроков.</p>
-
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          <div>
-            <label htmlFor="email" className="mb-2 block text-sm font-medium text-foreground">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              required
-              className="w-full rounded-[inherit] border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
-            />
-          </div>
-          <div>
-            <label htmlFor="password" className="mb-2 block text-sm font-medium text-foreground">
-              Пароль
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              required
-              className="w-full rounded-[inherit] border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary"
-            />
-          </div>
-          {error && <div className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">{error}</div>}
+    <main className="flex min-h-screen items-start justify-center bg-[#3D1534] px-4 pt-28 pb-4 sm:px-6 lg:px-8">
+      <section className="mt-20 w-full max-w-xl rounded-[28px] border border-slate-200 bg-white p-9 shadow-[0_24px_80px_-24px_rgba(15,23,42,0.35)]">
+        <div className="flex gap-2 rounded-full border border-slate-200 bg-slate-50 p-1">
           <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full rounded-full bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
+            type="button"
+            className="flex-1 rounded-full bg-[#3D1534] px-4 py-2 text-sm font-medium text-white shadow-sm"
           >
-            {isSubmitting ? 'Вход...' : 'Войти'}
+            Войти
           </button>
-        </form>
+          <button
+            type="button"
+            onClick={() => router.push('/register')}
+            className="flex-1 rounded-full px-4 py-2 text-sm font-medium text-slate-600 transition-all duration-200 hover:bg-secondary/30 hover:text-slate-900"
+          >
+            Регистрация
+          </button>
+        </div>
+
+        <div className="mt-6">
+          <h1 className="font-sans text-2xl font-semibold text-slate-900">Вход</h1>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Войдите в аккаунт, чтобы продолжить бронирование уроков.
+          </p>
+
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <div>
+              <label htmlFor="email" className="mb-2 block text-sm font-medium text-slate-700">
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                required
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-[#3D1534]"
+              />
+            </div>
+            <div>
+              <label htmlFor="password" className="mb-2 block text-sm font-medium text-slate-700">
+                Пароль
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                required
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-[#3D1534]"
+              />
+            </div>
+            {error && <div className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">{error}</div>}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full rounded-full bg-[#3D1534] px-4 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-[#2F102A] hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {isSubmitting ? 'Вход...' : 'Войти'}
+            </button>
+          </form>
+
+          <p className="mt-4 text-center text-sm text-slate-600">
+            Нет аккаунта?{' '}
+            <button type="button" onClick={() => router.push('/register')} className="font-semibold text-[#3D1534] underline-offset-4 transition-colors duration-200 hover:text-[#2F102A] hover:underline">
+              Зарегистрироваться
+            </button>
+          </p>
+        </div>
       </section>
     </main>
   );
