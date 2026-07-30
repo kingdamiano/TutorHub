@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import TutorCarousel from '@/components/TutorCarousel';
 import FAQ from '@/components/FAQ';
+import SubjectViewAllCard from '@/components/SubjectViewAllCard';
 import {
   Calculator,
   Languages,
@@ -222,7 +223,7 @@ export default async function Home() {
 
         <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-[#3D1534] py-20 sm:py-24 lg:py-28">
           <div className="mx-auto w-full max-w-7xl px-6 sm:px-8 lg:px-10">
-            <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
+            <div className="mx-auto grid w-full max-w-[1120px] justify-center justify-items-center gap-4 grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
               {subjects ? (
                 subjects.length > 0 ? (
                   <>
@@ -232,7 +233,7 @@ export default async function Home() {
                         <Link
                           key={subjectId}
                           href={`/tutors?subjects.id=${subjectId}`}
-                          className="group flex flex-col items-center justify-center rounded-2xl border border-white/20 bg-white/10 p-6 shadow-[0_10px_30px_rgba(0,0,0,0.16)] transition duration-200 hover:-translate-y-1 hover:bg-[#F6E0B6]/20 hover:shadow-[0_12px_32px_rgba(0,0,0,0.22)]"
+                          className="group flex w-full max-w-[220px] flex-col items-center justify-center rounded-2xl border border-white/20 bg-white/10 p-6 shadow-[0_10px_30px_rgba(0,0,0,0.16)] transition duration-200 hover:-translate-y-1 hover:bg-[#F6E0B6]/20 hover:shadow-[0_12px_32px_rgba(0,0,0,0.22)]"
                         >
                           <div className="rounded-full bg-[#F6E0B6]/20 p-3 text-[#FFF4EB] transition-colors duration-200 group-hover:bg-[#F6E0B6] group-hover:text-[#3D1534]">
                             {getIconForSubject(subject.name || '')}
@@ -244,27 +245,17 @@ export default async function Home() {
                       );
                     })}
 
-                    <Link
-                      href="/tutors"
-                      className="hidden lg:flex group flex-col items-center justify-center rounded-2xl border border-white/20 bg-white/10 p-6 shadow-[0_10px_30px_rgba(0,0,0,0.16)] transition duration-200 hover:-translate-y-1 hover:bg-[#F6E0B6]/20 hover:shadow-[0_12px_32px_rgba(0,0,0,0.22)]"
-                    >
-                      <div className="rounded-full bg-[#F6E0B6]/20 p-3 text-[#FFF4EB] transition-colors duration-200 group-hover:bg-[#F6E0B6] group-hover:text-[#3D1534]">
-                        <BookOpen className="h-6 w-6" />
-                      </div>
-                      <p className="mt-3 text-center text-sm font-sans font-semibold text-[#FFF4EB] transition-colors duration-200 group-hover:text-[#F6E0B6]">
-                        Смотреть все
-                      </p>
-                    </Link>
+                    <SubjectViewAllCard />
                   </>
                 ) : (
                   <div className="col-span-full py-8 text-center text-[#FFF4EB]/70">
                     {/* fallback: render some popular subjects that still navigate to tutors (by name) */}
-                    <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
+                    <div className="mx-auto grid w-full max-w-[1120px] justify-center justify-items-center gap-4 grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
                       {fallbackSubjects.map((s) => (
                         <Link
                           key={s.id}
                           href={`/tutors?subject=${encodeURIComponent(s.name)}`}
-                          className="group flex flex-col items-center justify-center rounded-2xl border border-white/20 bg-white/10 p-6 shadow-[0_10px_30px_rgba(0,0,0,0.16)] transition duration-200 hover:-translate-y-1 hover:bg-[#F6E0B6]/20 hover:shadow-[0_12px_32px_rgba(0,0,0,0.22)]"
+                          className="group flex w-full max-w-[220px] flex-col items-center justify-center rounded-2xl border border-white/20 bg-white/10 p-6 shadow-[0_10px_30px_rgba(0,0,0,0.16)] transition duration-200 hover:-translate-y-1 hover:bg-[#F6E0B6]/20 hover:shadow-[0_12px_32px_rgba(0,0,0,0.22)]"
                         >
                           <div className="rounded-full bg-[#F6E0B6]/20 p-3 text-[#FFF4EB] transition-colors duration-200 group-hover:bg-[#F6E0B6] group-hover:text-[#3D1534]">
                             {getIconForSubject(s.name)}
@@ -274,17 +265,7 @@ export default async function Home() {
                           </p>
                         </Link>
                       ))}
-                      <Link
-                        href="/tutors"
-                        className="group flex flex-col items-center justify-center rounded-2xl border border-white/20 bg-white/10 p-6 shadow-[0_10px_30px_rgba(0,0,0,0.16)] transition duration-200 hover:-translate-y-1 hover:bg-[#F6E0B6]/20 hover:shadow-[0_12px_32px_rgba(0,0,0,0.22)]"
-                      >
-                        <div className="rounded-full bg-[#F6E0B6]/20 p-3 text-[#FFF4EB] transition-colors duration-200 group-hover:bg-[#F6E0B6] group-hover:text-[#3D1534]">
-                          <BookOpen className="h-6 w-6" />
-                        </div>
-                        <p className="mt-3 text-center text-sm font-sans font-semibold text-[#FFF4EB] transition-colors duration-200 group-hover:text-[#F6E0B6]">
-                          Смотреть все
-                        </p>
-                      </Link>
+                      <SubjectViewAllCard />
                     </div>
                   </div>
                 )
