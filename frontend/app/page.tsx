@@ -191,12 +191,12 @@ export default async function Home() {
       <div className="mx-auto flex max-w-7xl flex-col px-4 pt-16 pb-0 sm:px-6 lg:px-8 lg:pt-20 lg:pb-0 w-full">
         {/* HERO SECTION */}
         <section className="px-6 pt-8 pb-0 sm:px-8 lg:px-10 lg:pt-12 lg:pb-0">
-          <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:items-center">
-            <div className="flex flex-col justify-center md:pr-8">
+          <div className="flex flex-col items-center gap-8 text-center lg:grid lg:grid-cols-2 lg:items-center lg:gap-12 lg:text-left">
+            <div className="flex w-full flex-col items-center justify-center lg:items-start lg:pr-8">
               <h1 className="max-w-3xl font-serif text-4xl leading-tight text-white sm:text-5xl md:text-4xl lg:text-6xl">
                 Найдите <em className="not-italic text-[#F6E0B6]">идеального</em> репетитора для ваших целей
               </h1>
-              <div className="mt-8">
+              <div className="mt-14 flex justify-center lg:mt-16 lg:justify-start">
                 <Link
                   href="/tutors"
                   className="inline-flex w-fit rounded-full bg-[#F6E0B6] px-14 py-3 text-sm font-semibold text-[#3D1534] transition hover:opacity-90"
@@ -206,8 +206,8 @@ export default async function Home() {
               </div>
             </div>
 
-            <div className="flex items-center justify-center">
-              <div className="relative w-full max-w-3xl min-h-[420px] overflow-hidden rounded-[30%_70%_70%_30%/_30%_30%_70%_70%] border-[3px] border-border bg-[#3D1534] text-white shadow-xl sm:px-8">
+            <div className="flex w-full flex-col items-center justify-center lg:items-center">
+              <div className="relative w-full max-w-3xl min-h-[320px] overflow-hidden rounded-[30%_70%_70%_30%/_30%_30%_70%_70%] border-[3px] border-border bg-[#3D1534] text-white shadow-xl sm:min-h-[380px] lg:min-h-[420px]">
                 <Image
                   src="/hero-photo.jpg"
                   alt="Студентка занимается с репетитором при свете лампы"
@@ -215,6 +215,7 @@ export default async function Home() {
                   className="object-cover"
                 />
               </div>
+
             </div>
           </div>
         </section>

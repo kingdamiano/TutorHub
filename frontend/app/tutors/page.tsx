@@ -21,7 +21,9 @@ type RawTutor = {
 
 async function fetchTutors(subjectQuery?: string): Promise<RawTutor[]> {
   const q = subjectQuery ?? '';
-  const res = await fetch(buildApiUrl(`/api/tutor_profiles?itemsPerPage=50${q}`), {
+  const apiUrl = buildApiUrl(`/api/tutor_profiles?itemsPerPage=50${q}`);
+  console.log('TutorsPage fetch URL:', apiUrl);
+  const res = await fetch(apiUrl, {
     cache: 'no-store',
   });
   if (!res.ok) {
@@ -98,8 +100,8 @@ export default async function TutorsPage({ searchParams }: { searchParams?: Sear
   }
 
   const active = params?.['subjects.id'];
-  const activeIds = Array.isArray(active) ? active : active ? [active] : [];
-  const subjectQuery = activeIds.map((id) => `&subjects.id=${encodeURIComponent(id)}`).join('');
+  const activeId = Array.isArray(active) ? active[0] : active ?? null;
+  const subjectQuery = activeId ? `&subjects.id=${encodeURIComponent(activeId)}` : '';
 
   const [tutors, subjects] = await Promise.all([fetchTutors(subjectQuery), fetchSubjects()]);
 
@@ -137,7 +139,7 @@ export default async function TutorsPage({ searchParams }: { searchParams?: Sear
               id: getSubjectId(s),
               name: typeof s === 'string' ? 'Предмет' : s.name ?? 'Предмет',
             }))}
-            activeIds={activeIds}
+            activeId={activeId}
           />
 
           <TutorGrid tutors={resolvedTutors} />
