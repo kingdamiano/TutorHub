@@ -192,13 +192,13 @@ export default async function Home() {
         {/* HERO SECTION */}
         <section className="px-6 pt-4 pb-0 sm:px-8 sm:pt-5 md:pt-6 lg:px-10 lg:pt-3 lg:pb-0">
           <div className="flex flex-col items-center gap-6 text-center sm:gap-7 md:gap-8 lg:grid lg:grid-cols-2 lg:items-start lg:gap-8 lg:text-left">
-            <div className="flex w-full flex-col items-center justify-center lg:items-start lg:pr-8 lg:mt-[10px]">
-              <h1 className="max-w-3xl font-serif text-4xl leading-tight text-white sm:text-5xl md:text-4xl lg:text-6xl">
+            <div className="order-1 lg:order-none flex w-full flex-col items-center justify-center lg:items-start lg:pr-8 lg:mt-[10px]">
+              <h1 className="max-w-3xl text-center font-serif text-4xl leading-tight text-white sm:text-5xl md:text-4xl lg:text-left lg:text-6xl">
                 Найдите <em className="not-italic text-[#F6E0B6]">идеального</em> репетитора для ваших целей
               </h1>
             </div>
 
-            <div className="flex w-full flex-col items-center justify-center order-3 md:order-3 lg:order-none lg:items-center lg:mt-8">
+            <div className="order-2 lg:order-none flex w-full flex-col items-center justify-center lg:items-center lg:mt-8">
               <div className="relative w-full max-w-3xl min-h-[320px] overflow-hidden rounded-[30%_70%_70%_30%/_30%_30%_70%_70%] border-[3px] border-border bg-[#3D1534] text-white shadow-xl sm:min-h-[380px] lg:min-h-[420px]">
                 <Image
                   src="/hero-photo.jpg"
@@ -209,7 +209,7 @@ export default async function Home() {
               </div>
             </div>
 
-            <div className="flex w-full items-center justify-center order-1 md:order-1 lg:order-none lg:justify-start lg:mt-[-75px]">
+            <div className="order-3 lg:order-none flex w-full items-center justify-center lg:justify-start lg:mt-[-75px]">
               <Link
                 href="/tutors"
                 className="inline-flex w-fit rounded-full bg-[#F6E0B6] px-14 py-3 text-sm font-semibold text-[#3D1534] transition hover:opacity-90"
@@ -246,7 +246,7 @@ export default async function Home() {
 
                     <Link
                       href="/tutors"
-                      className="group flex flex-col items-center justify-center rounded-2xl border border-white/20 bg-white/10 p-6 shadow-[0_10px_30px_rgba(0,0,0,0.16)] transition duration-200 hover:-translate-y-1 hover:bg-[#F6E0B6]/20 hover:shadow-[0_12px_32px_rgba(0,0,0,0.22)]"
+                      className="hidden lg:flex group flex-col items-center justify-center rounded-2xl border border-white/20 bg-white/10 p-6 shadow-[0_10px_30px_rgba(0,0,0,0.16)] transition duration-200 hover:-translate-y-1 hover:bg-[#F6E0B6]/20 hover:shadow-[0_12px_32px_rgba(0,0,0,0.22)]"
                     >
                       <div className="rounded-full bg-[#F6E0B6]/20 p-3 text-[#FFF4EB] transition-colors duration-200 group-hover:bg-[#F6E0B6] group-hover:text-[#3D1534]">
                         <BookOpen className="h-6 w-6" />
