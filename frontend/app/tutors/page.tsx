@@ -19,10 +19,12 @@ type RawTutor = {
   [key: string]: unknown;
 };
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function fetchTutors(subjectQuery?: string): Promise<RawTutor[]> {
   const q = subjectQuery ?? '';
   const apiUrl = buildApiUrl(`/api/tutor_profiles?itemsPerPage=50${q}`);
-  console.log('TutorsPage fetch URL:', apiUrl);
   const res = await fetch(apiUrl, {
     cache: 'no-store',
   });
@@ -30,7 +32,8 @@ async function fetchTutors(subjectQuery?: string): Promise<RawTutor[]> {
     throw new Error('Failed to fetch tutors');
   }
   const data = await res.json();
-  return data['hydra:member'] ?? [];
+  const members = data['hydra:member'] ?? [];
+  return members;
 }
 
 async function fetchSubjects() {
@@ -100,8 +103,14 @@ export default async function TutorsPage({ searchParams }: { searchParams?: Sear
   }
 
   const active = params?.['subjects.id'];
-  const activeId = Array.isArray(active) ? active[0] : active ?? null;
-  const subjectQuery = activeId ? `&subjects.id=${encodeURIComponent(activeId)}` : '';
+  const activeValue = Array.isArray(active) ? active[0] : active ?? null;
+  const activeIds = activeValue
+    ? activeValue
+        .split(',')
+        .map((value) => value.trim())
+        .filter(Boolean)
+    : [];
+  const subjectQuery = activeIds.length > 0 ? `&subjects.id=${encodeURIComponent(activeIds.join(','))}` : '';
 
   const [tutors, subjects] = await Promise.all([fetchTutors(subjectQuery), fetchSubjects()]);
 
@@ -110,15 +119,40 @@ export default async function TutorsPage({ searchParams }: { searchParams?: Sear
       .map((subject: RawSubject) => {
         const subjectId = getSubjectId(subject);
         const name = typeof subject === 'string' ? 'Предмет' : subject.name ?? 'Предмет';
-        return [subjectId, name];
+        return [subjectId, name] as [string, string];
       })
-      .filter(([id]) => Boolean(id))
+      .filter(([id]: [string, string]) => Boolean(id))
   );
 
-  const resolvedTutors = tutors.map((tutor) => ({
-    ...tutor,
-    subjects: resolveSubjects(tutor, subjectMap),
-  }));
+  const resolvedTutors = tutors
+    .map((tutor) => ({
+      ...tutor,
+      subjects: resolveSubjects(tutor, subjectMap),
+    }))
+    .filter((tutor) => {
+      if (activeIds.length === 0) {
+        return true;
+      }
+
+      const tutorSubjectIds = (tutor.subjects ?? [])
+        .map((subject: { '@id'?: string; id?: string | number } | null) => {
+          if (!subject) return null;
+          if (typeof subject === 'object') {
+            if (typeof subject.id === 'number' || typeof subject.id === 'string') {
+              return String(subject.id);
+            }
+            const iri = subject['@id'];
+            if (typeof iri === 'string') {
+              const segments = iri.split('/').filter(Boolean);
+              return segments[segments.length - 1] ?? iri;
+            }
+          }
+          return null;
+        })
+        .filter(Boolean);
+
+      return activeIds.every((id) => tutorSubjectIds.includes(id));
+    });
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#3D1534] text-[#3D1534]">
@@ -139,7 +173,7 @@ export default async function TutorsPage({ searchParams }: { searchParams?: Sear
               id: getSubjectId(s),
               name: typeof s === 'string' ? 'Предмет' : s.name ?? 'Предмет',
             }))}
-            activeId={activeId}
+            activeIds={activeIds}
           />
 
           <TutorGrid tutors={resolvedTutors} />
