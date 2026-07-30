@@ -188,25 +188,17 @@ export default async function Home() {
 
   return (
     <main className="flex flex-col">
-      <div className="mx-auto flex max-w-7xl flex-col px-4 pt-16 pb-0 sm:px-6 lg:px-8 lg:pt-20 lg:pb-0 w-full">
+      <div className="mx-auto flex max-w-7xl flex-col px-4 pt-8 pb-0 sm:px-6 sm:pt-10 md:pt-12 lg:px-8 lg:pt-[76px] lg:pb-0 w-full">
         {/* HERO SECTION */}
-        <section className="px-6 pt-8 pb-0 sm:px-8 lg:px-10 lg:pt-12 lg:pb-0">
-          <div className="flex flex-col items-center gap-8 text-center lg:grid lg:grid-cols-2 lg:items-center lg:gap-12 lg:text-left">
-            <div className="flex w-full flex-col items-center justify-center lg:items-start lg:pr-8">
+        <section className="px-6 pt-4 pb-0 sm:px-8 sm:pt-5 md:pt-6 lg:px-10 lg:pt-3 lg:pb-0">
+          <div className="flex flex-col items-center gap-6 text-center sm:gap-7 md:gap-8 lg:grid lg:grid-cols-2 lg:items-start lg:gap-8 lg:text-left">
+            <div className="flex w-full flex-col items-center justify-center lg:items-start lg:pr-8 lg:mt-[10px]">
               <h1 className="max-w-3xl font-serif text-4xl leading-tight text-white sm:text-5xl md:text-4xl lg:text-6xl">
                 Найдите <em className="not-italic text-[#F6E0B6]">идеального</em> репетитора для ваших целей
               </h1>
-              <div className="mt-14 flex justify-center lg:mt-16 lg:justify-start">
-                <Link
-                  href="/tutors"
-                  className="inline-flex w-fit rounded-full bg-[#F6E0B6] px-14 py-3 text-sm font-semibold text-[#3D1534] transition hover:opacity-90"
-                >
-                  Начать сейчас
-                </Link>
-              </div>
             </div>
 
-            <div className="flex w-full flex-col items-center justify-center lg:items-center">
+            <div className="flex w-full flex-col items-center justify-center order-3 md:order-3 lg:order-none lg:items-center lg:mt-8">
               <div className="relative w-full max-w-3xl min-h-[320px] overflow-hidden rounded-[30%_70%_70%_30%/_30%_30%_70%_70%] border-[3px] border-border bg-[#3D1534] text-white shadow-xl sm:min-h-[380px] lg:min-h-[420px]">
                 <Image
                   src="/hero-photo.jpg"
@@ -215,7 +207,15 @@ export default async function Home() {
                   className="object-cover"
                 />
               </div>
+            </div>
 
+            <div className="flex w-full items-center justify-center order-1 md:order-1 lg:order-none lg:justify-start lg:mt-[-75px]">
+              <Link
+                href="/tutors"
+                className="inline-flex w-fit rounded-full bg-[#F6E0B6] px-14 py-3 text-sm font-semibold text-[#3D1534] transition hover:opacity-90"
+              >
+                Начать сейчас
+              </Link>
             </div>
           </div>
         </section>
