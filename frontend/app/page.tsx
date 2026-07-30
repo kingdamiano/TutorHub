@@ -222,7 +222,7 @@ export default async function Home() {
         </section>
 
         <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-[#3D1534] py-20 sm:py-24 lg:py-28">
-          <div className="mx-auto w-full max-w-7xl px-6 sm:px-8 lg:px-10">
+          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mx-auto grid w-full max-w-[1120px] justify-center justify-items-center gap-4 grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
               {subjects ? (
                 subjects.length > 0 ? (
@@ -286,14 +286,14 @@ export default async function Home() {
           <div className="absolute top-[-40px] right-1/6 w-112 h-112 bg-[#3D1534]/35 rounded-full blur-3xl" />
           <div className="absolute bottom-6 left-1/6 w-96 h-96 bg-[#3D1534]/20 rounded-full blur-3xl" />
         </div>
-        <div className="mx-auto w-full max-w-7xl px-6 sm:px-8 lg:px-10">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="font-sans text-3xl font-semibold text-[#3D1534] mb-12">Просто, удобно и без лишних шагов</h2>
           </div>
 
-          <div className="mt-10 grid gap-8 md:grid-cols-3">
+          <div className="mt-10 grid gap-8 px-7 sm:px-10 md:grid-cols-3 md:px-0">
             {steps.map((step, index) => (
-              <div key={step.title} className="overflow-hidden rounded-2xl border border-white/30 bg-[#F6E0B6]/20 backdrop-blur-xl scale-105 shadow-xl">
+              <div key={step.title} className="overflow-hidden rounded-2xl border border-white/30 bg-[#F6E0B6]/20 backdrop-blur-xl shadow-xl sm:scale-105">
                 <div className="h-[180px] w-full overflow-hidden rounded-t-2xl">
                   <Image
                     src={step.image}
@@ -303,8 +303,8 @@ export default async function Home() {
                     className="h-[180px] w-full object-cover"
                   />
                 </div>
-                <div className="p-6 pb-8 bg-[#FFF4EB]">
-                  <div className="inline-flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold text-[#3D1534]">
+                <div className="p-6 pb-8 bg-[#FFF4EB] text-center">
+                  <div className="mx-auto inline-flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold text-[#3D1534]">
                     0{index + 1}
                   </div>
                   <h3 className="mt-4 text-lg font-sans font-semibold text-[#3D1534]">{step.title}</h3>
