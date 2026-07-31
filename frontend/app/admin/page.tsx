@@ -56,7 +56,7 @@ export default function AdminPage() {
 
   if (loading) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+      <main className="mx-auto flex max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
         <div className="rounded-3xl border border-border bg-card px-6 py-5 text-sm text-muted-foreground shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
           Загрузка...
         </div>
@@ -66,7 +66,7 @@ export default function AdminPage() {
 
   if (error) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+      <main className="mx-auto flex max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
         <div className="rounded-3xl border border-amber-200 bg-amber-50 px-6 py-5 text-sm text-amber-800 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
           Ошибка: {error}
         </div>
@@ -115,7 +115,7 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#3D1534] px-4 py-0 sm:px-6 lg:px-8">
+    <main className="relative overflow-hidden bg-[#3D1534] px-4 py-0 sm:px-6 lg:px-8">
       <BackgroundBlobs className="absolute inset-0 pointer-events-none" />
 
       <div className="mx-auto relative z-10 max-w-[1215px] px-4 py-10 sm:px-6 lg:px-8">

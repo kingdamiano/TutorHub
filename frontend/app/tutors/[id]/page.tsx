@@ -90,10 +90,10 @@ export default async function TutorProfilePage({ params }: TutorPageProps) {
 
   if (!tutor) {
     return (
-      <main className="relative min-h-screen bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
+      <main className="relative bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
         <BackgroundBlobs className="absolute inset-0 pointer-events-none" />
 
-        <div className="mx-auto relative z-10 flex min-h-screen max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto relative z-10 flex max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
           <div className="w-full rounded-[2rem] border border-white/10 bg-white/95 p-8 text-center text-foreground shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
             <h1 className="font-sans text-2xl font-semibold text-foreground">Репетитор не найден</h1>
             <p className="mt-2 text-sm text-muted-foreground">Проверьте ссылку или вернитесь к каталогу.</p>
@@ -121,7 +121,7 @@ export default async function TutorProfilePage({ params }: TutorPageProps) {
   const price = tutor.pricePerHour ?? '—';
 
   return (
-    <main className="relative min-h-screen bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
+    <main className="relative bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
       <BackgroundBlobs className="absolute inset-0 pointer-events-none" />
 
       <div className="mx-auto relative z-10 max-w-6xl">

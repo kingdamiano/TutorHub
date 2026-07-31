@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { ChevronDown, Menu, X } from 'lucide-react';
 import { useAuthModal } from './AuthModal';
@@ -27,6 +27,8 @@ export default function AuthStatus() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isSecondaryMenuOpen, setIsSecondaryMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileMenuMounted, setIsMobileMenuMounted] = useState(false);
+  const mobileMenuRootRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let isActive = true;
@@ -110,8 +112,38 @@ export default function AuthStatus() {
 
   useEffect(() => {
     setIsSecondaryMenuOpen(false);
-    setIsMobileMenuOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      setIsMobileMenuMounted(true);
+    } else {
+      const t = setTimeout(() => setIsMobileMenuMounted(false), 200);
+      return () => clearTimeout(t);
+    }
+    return;
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsMobileMenuOpen(false);
+    };
+    const handleDown = (e: MouseEvent) => {
+      const t = e.target as Node | null;
+      if (mobileMenuRootRef.current && t && !mobileMenuRootRef.current.contains(t)) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    document.addEventListener('keydown', handleKey);
+    document.addEventListener('mousedown', handleDown);
+    return () => {
+      document.removeEventListener('keydown', handleKey);
+      document.removeEventListener('mousedown', handleDown);
+    };
+  }, [isMobileMenuOpen]);
+
+  
 
   function handleLogout() {
     document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
@@ -198,97 +230,101 @@ export default function AuthStatus() {
     </div>
   );
 
-  const mobileMenu = (
-    <div className="relative flex lg:hidden">
-      <button
-        type="button"
-        onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition hover:bg-white/20"
-        aria-label="Открыть меню"
-      >
-        {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-      </button>
-
-      {isMobileMenuOpen && (
-        <div className="absolute right-0 top-full z-[60] mt-3 w-72 rounded-2xl border border-white/10 bg-[#3D1534]/95 p-3 shadow-2xl backdrop-blur-xl">
-          <div className="flex items-center justify-between border-b border-white/10 pb-3">
-            <p className="ml-2 text-sm font-semibold text-white">Навигация</p>
-            <button
-              type="button"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white"
-              aria-label="Закрыть меню"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-
-          <div className="mt-3 flex flex-col gap-2">
-            {userEmail ? (
-              <>
-                <div className="rounded-xl border border-white/10 bg-white/10 p-3">
-                  <p className="text-[11px] uppercase tracking-[0.24em] text-[#F6E0B6]/80">Аккаунт</p>
-                  <p className="mt-1 text-sm font-semibold text-white">{userEmail}</p>
-                </div>
-                <Link
-                  href="/dashboard"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="rounded-xl px-3 py-2 text-sm font-medium text-white/80 transition-colors hover:bg-[#F6E0B6]/20 hover:text-[#F6E0B6]"
-                >
-                  Личный кабинет
-                </Link>
-                {secondaryLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="rounded-xl px-3 py-2 text-sm font-medium text-white/80 transition-colors hover:bg-[#F6E0B6]/20 hover:text-[#F6E0B6]"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="rounded-xl border border-white/20 px-3 py-2 text-left text-sm font-semibold text-white transition-colors hover:bg-white/10"
-                >
-                  Выйти
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                    openAuthModal('login');
-                  }}
-                  className="rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-left text-sm font-semibold text-white transition-colors hover:bg-white/20"
-                >
-                  Войти
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                    openAuthModal('register');
-                  }}
-                  className="rounded-xl bg-[#F6E0B6] px-3 py-2 text-left text-sm font-semibold text-[#3D1534] transition-colors hover:bg-[#f9e7bf]"
-                >
-                  Регистрация
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
+  
 
   return (
     <div className="relative flex items-center">
       {desktopContent}
-      {mobileMenu}
+      <div className="relative flex lg:hidden" ref={mobileMenuRootRef}>
+        <button
+          type="button"
+          onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition hover:bg-white/20"
+          aria-label="Открыть меню"
+        >
+          {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
+
+        {isMobileMenuMounted && (
+          <div
+            className="absolute right-0 top-full z-[60] mt-3 w-72 rounded-2xl border border-white/10 bg-[#3D1534]/95 p-3 shadow-2xl backdrop-blur-xl transform origin-top-right transition-all duration-200"
+            style={{
+              opacity: isMobileMenuOpen ? 1 : 0,
+              transform: isMobileMenuOpen ? 'translateY(0) scale(1)' : 'translateY(-6px) scale(0.98)'
+            }}
+          >
+            <div className="flex items-center justify-between pb-3">
+              <p className="ml-2 text-sm font-semibold text-white">Навигация</p>
+              <button
+                type="button"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white"
+                aria-label="Закрыть меню"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="mt-3 flex flex-col gap-2">
+              {userEmail ? (
+                <>
+                  <div className="rounded-xl border border-white/10 bg-white/10 p-3">
+                    <p className="text-[11px] uppercase tracking-[0.24em] text-[#F6E0B6]/80">Аккаунт</p>
+                    <p className="mt-1 text-sm font-semibold text-white">{userEmail}</p>
+                  </div>
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="rounded-xl px-3 py-2 text-sm font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-[#F6E0B6]"
+                  >
+                    Личный кабинет
+                  </Link>
+                  {secondaryLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="rounded-xl px-3 py-2 text-sm font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-[#F6E0B6]"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="rounded-xl border border-white/20 px-3 py-2 text-left text-sm font-semibold text-white transition-colors hover:bg-white/10"
+                  >
+                    Выйти
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      openAuthModal('login');
+                    }}
+                    className="rounded-xl border border-white/20 px-3 py-2 text-left text-sm font-semibold text-white transition-colors hover:bg-white/10"
+                  >
+                    Войти
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      openAuthModal('register');
+                    }}
+                    className="rounded-xl bg-[#F6E0B6] px-3 py-2 text-left text-sm font-semibold text-[#3D1534] transition-colors hover:bg-[#f9e7bf]"
+                  >
+                    Регистрация
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

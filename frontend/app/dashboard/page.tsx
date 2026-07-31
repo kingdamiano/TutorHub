@@ -239,7 +239,7 @@ export default function DashboardPage() {
 
   if (!token) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-[76rem] items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+      <main className="mx-auto flex max-w-[76rem] items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
         <section className="w-full max-w-xl rounded-[18px] border border-white/20 bg-[radial-gradient(circle_at_top_left,_rgba(246,224,182,0.28),_transparent_42%),linear-gradient(135deg,_#3D1534_0%,_#4A2A4A_100%)] p-8 shadow-[0_24px_80px_-28px_rgba(15,23,42,0.35)]">
           <p className="text-sm font-medium uppercase tracking-[0.24em] text-[#F6E0B6]">Личный кабинет</p>
           <h1 className="mt-3 font-sans text-3xl font-semibold text-white">Войдите, чтобы открыть персональную панель</h1>
@@ -256,7 +256,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-[76rem] items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+      <main className="mx-auto flex max-w-[76rem] items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
         <div className="rounded-[18px] border border-white/20 bg-[#FFF4EB]/95 px-6 py-5 text-sm text-[#3D1534] shadow-[0_24px_80px_-28px_rgba(15,23,42,0.35)]">
           Загрузка...
         </div>
@@ -266,7 +266,7 @@ export default function DashboardPage() {
 
   if (error) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-[76rem] items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+      <main className="mx-auto flex max-w-[76rem] items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
         <div className="rounded-[18px] border border-amber-200 bg-amber-50 px-6 py-5 text-sm text-amber-800 shadow-[0_24px_80px_-28px_rgba(15,23,42,0.35)]">
           Ошибка: {error}
         </div>
@@ -275,32 +275,32 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen px-4 py-0 sm:px-6 lg:px-8">
-      <div className="relative min-h-screen left-1/2 right-1/2 -mx-[50vw] w-screen bg-[#3D1534]">
+    <main className="px-4 py-0 pb-6 sm:px-6 sm:pb-8 lg:px-8 lg:pb-10">
+      <div className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-[#3D1534]">
         <BackgroundBlobs />
 
-        <div className="mx-auto relative z-10 flex max-w-[76rem] flex-col gap-6 px-4 pt-10 sm:px-6 lg:px-8">
+        <div className="relative z-10 mx-auto flex max-w-[76rem] flex-col gap-6 px-4 pt-10 sm:px-6 lg:px-8">
           <section className="rounded-[18px] border border-white/15 bg-transparent p-4 shadow-[0_24px_80px_-28px_rgba(15,23,42,0.35)] sm:p-6">
             <div className="flex flex-col gap-3">
               <div className="max-w-2xl">
-                <h1 className="font-sans text-2xl font-semibold text-white sm:text-3xl">Добро пожаловать в ваш кабинет</h1>
+                <h1 className="font-sans text-xl font-semibold text-white sm:text-2xl lg:text-3xl">Добро пожаловать в ваш кабинет</h1>
                 <p className="mt-2 text-sm leading-6 text-[#FFF4EB]/80">
                   Здесь собраны ваши бронирования, статусы уроков и быстрый доступ к важным действиям.
                 </p>
               </div>
 
-              <div className="mt-4 grid grid-cols-3 gap-4">
-                <div className="rounded-lg border border-white/15 bg-white/10 px-4 py-3 backdrop-blur-sm">
-                  <p className="text-xs uppercase tracking-[0.08em] text-[#F6E0B6]">В ожидании</p>
-                  <p className="mt-1 text-2xl font-semibold text-white">{pendingCount}</p>
+              <div className="mt-4 grid grid-cols-3 gap-3 sm:gap-4">
+                <div className="min-w-0 rounded-lg border border-white/15 bg-white/10 px-3 py-3 backdrop-blur-sm sm:px-4">
+                  <p className="text-[10px] uppercase tracking-[0.08em] text-[#F6E0B6] sm:text-xs">В ожидании</p>
+                  <p className="mt-1 text-lg font-semibold leading-tight text-white sm:text-xl lg:text-2xl">{pendingCount}</p>
                 </div>
-                <div className="rounded-lg border border-white/15 bg-white/10 px-4 py-3 backdrop-blur-sm">
-                  <p className="text-xs uppercase tracking-[0.08em] text-[#F6E0B6]">Подтверждено</p>
-                  <p className="mt-1 text-2xl font-semibold text-white">{confirmedCount}</p>
+                <div className="min-w-0 rounded-lg border border-white/15 bg-white/10 px-2 py-3 backdrop-blur-sm sm:px-4">
+                  <p className="max-w-full text-[9px] uppercase leading-snug tracking-[0.08em] text-[#F6E0B6] sm:text-xs">Подтверждено</p>
+                  <p className="mt-1 text-base font-semibold leading-tight text-white sm:text-xl lg:text-2xl">{confirmedCount}</p>
                 </div>
-                <div className="rounded-lg border border-white/15 bg-white/10 px-4 py-3 backdrop-blur-sm">
-                  <p className="text-xs uppercase tracking-[0.08em] text-[#F6E0B6]">Завершено</p>
-                  <p className="mt-1 text-2xl font-semibold text-white">{completedCount}</p>
+                <div className="min-w-0 rounded-lg border border-white/15 bg-white/10 px-3 py-3 backdrop-blur-sm sm:px-4">
+                  <p className="text-[10px] uppercase tracking-[0.08em] text-[#F6E0B6] sm:text-xs">Завершено</p>
+                  <p className="mt-1 text-lg font-semibold leading-tight text-white sm:text-xl lg:text-2xl">{completedCount}</p>
                 </div>
               </div>
             </div>
@@ -327,13 +327,13 @@ export default function DashboardPage() {
           <section className="rounded-[16px] border border-white/20 bg-[#FFF4EB]/95 p-6 shadow-[0_16px_40px_-20px_rgba(15,23,42,0.2)]">
             <p className="text-sm font-medium uppercase tracking-[0.24em] text-[#3D1534]/70">Кратко</p>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <div className="rounded-lg border border-[#3D1534]/10 bg-white/85 p-4">
+              <div className="min-w-0 rounded-lg border border-[#3D1534]/10 bg-white/85 p-4">
                 <p className="text-sm text-[#3D1534]/70">Активных заявок</p>
-                <p className="mt-1 text-2xl font-semibold text-[#3D1534]">{pendingCount}</p>
+                <p className="mt-1 text-xl font-semibold text-[#3D1534] sm:text-2xl">{pendingCount}</p>
               </div>
-              <div className="rounded-lg border border-[#3D1534]/10 bg-white/85 p-4">
+              <div className="min-w-0 rounded-lg border border-[#3D1534]/10 bg-white/85 p-4">
                 <p className="text-sm text-[#3D1534]/70">Подтверждено</p>
-                <p className="mt-1 text-2xl font-semibold text-[#3D1534]">{confirmedCount}</p>
+                <p className="mt-1 text-xl font-semibold text-[#3D1534] sm:text-2xl">{confirmedCount}</p>
               </div>
             </div>
           </section>

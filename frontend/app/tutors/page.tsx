@@ -167,7 +167,7 @@ export default async function TutorsPage({ searchParams }: { searchParams?: Sear
     });
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#3D1534] text-[#3D1534]">
+    <main className="relative overflow-hidden bg-[#3D1534] text-[#3D1534]">
       <BackgroundBlobs className="absolute inset-0 pointer-events-none" />
 
       <div className="mx-auto flex max-w-[calc(80rem-20px)] flex-col px-4 py-6 sm:px-6 lg:px-8 lg:py-8">

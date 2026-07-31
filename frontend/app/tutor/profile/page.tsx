@@ -120,7 +120,7 @@ export default function TutorProfilePage() {
 
   if (!token) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-[76rem] items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+      <main className="mx-auto flex max-w-[76rem] items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
         <section className="w-full max-w-xl rounded-3xl border border-border bg-card p-8 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
           <h1 className="font-sans text-3xl font-semibold text-foreground">Мой профиль репетитора</h1>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
@@ -136,7 +136,7 @@ export default function TutorProfilePage() {
 
   if (loading) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-[76rem] items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+      <main className="mx-auto flex max-w-[76rem] items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
         <div className="rounded-3xl border border-border bg-card px-6 py-5 text-sm text-muted-foreground shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
           Загрузка…
         </div>
@@ -146,7 +146,7 @@ export default function TutorProfilePage() {
 
   if (!me?.roles?.includes('ROLE_TUTOR')) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-[76rem] items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+      <main className="mx-auto flex max-w-[76rem] items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
         <div className="rounded-3xl border border-border bg-card px-6 py-5 text-sm text-muted-foreground shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
           Эта страница доступна только репетиторам
         </div>
@@ -356,7 +356,7 @@ export default function TutorProfilePage() {
   }
 
   const renderPageShell = (content: React.ReactNode) => (
-    <main className="relative min-h-screen bg-[#3D1534] px-4 py-0 sm:px-6 lg:px-8">
+    <main className="relative bg-[#3D1534] px-4 py-0 sm:px-6 lg:px-8">
       <BackgroundBlobs className="absolute inset-0 pointer-events-none" />
       <div className="mx-auto relative z-10 max-w-[76rem] px-4 py-8 sm:px-6 lg:px-8">
         {content}

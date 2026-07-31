@@ -275,9 +275,9 @@ export default function TutorAvailabilityPage() {
 
   if (loading) {
     return (
-      <main className="relative min-h-screen overflow-hidden bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
+      <main className="relative overflow-hidden bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
         <BackgroundBlobs className="absolute inset-0 pointer-events-none" />
-        <div className="mx-auto flex min-h-screen max-w-6xl items-center justify-center">
+        <div className="mx-auto flex max-w-6xl items-center justify-center">
           <div className="rounded-3xl border border-border bg-card px-6 py-5 text-sm text-muted-foreground shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
             Загрузка…
           </div>
@@ -288,9 +288,9 @@ export default function TutorAvailabilityPage() {
 
   if (sessionExpired) {
     return (
-      <main className="relative min-h-screen overflow-hidden bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
+      <main className="relative overflow-hidden bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
         <BackgroundBlobs className="absolute inset-0 pointer-events-none" />
-        <div className="mx-auto flex min-h-screen max-w-6xl items-center justify-center">
+        <div className="mx-auto flex max-w-6xl items-center justify-center">
           <section className="w-full max-w-xl rounded-3xl border border-border bg-card p-8 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
             <p className="text-sm leading-6 text-muted-foreground">
               Сессия истекла, пожалуйста, <Link href="/login" className="font-medium text-primary underline-offset-4 hover:underline">войдите заново</Link>.
@@ -303,9 +303,9 @@ export default function TutorAvailabilityPage() {
 
   if (!hasAccess) {
     return (
-      <main className="relative min-h-screen overflow-hidden bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
+      <main className="relative overflow-hidden bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
         <BackgroundBlobs className="absolute inset-0 pointer-events-none" />
-        <div className="mx-auto flex min-h-screen max-w-6xl items-center justify-center">
+        <div className="mx-auto flex max-w-6xl items-center justify-center">
           <div className="rounded-3xl border border-border bg-card px-6 py-5 text-sm text-muted-foreground shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
             Эта страница доступна только репетиторам
           </div>
@@ -316,9 +316,9 @@ export default function TutorAvailabilityPage() {
 
   if (!tutorProfileIri) {
     return (
-      <main className="relative min-h-screen overflow-hidden bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
+      <main className="relative overflow-hidden bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
         <BackgroundBlobs className="absolute inset-0 pointer-events-none" />
-        <div className="mx-auto flex min-h-screen max-w-6xl items-center justify-center">
+        <div className="mx-auto flex max-w-6xl items-center justify-center">
           <section className="w-full max-w-xl rounded-3xl border border-border bg-card p-8 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)]">
             <h1 className="font-sans text-3xl font-semibold text-foreground">Моё расписание</h1>
             <p className="mt-3 text-sm leading-6 text-muted-foreground">Сначала создайте профиль репетитора.</p>
@@ -332,7 +332,7 @@ export default function TutorAvailabilityPage() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
+    <main className="relative overflow-hidden bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
       <BackgroundBlobs className="absolute inset-0 pointer-events-none" />
       <div className="mx-auto flex max-w-6xl flex-col gap-6">
         <header className="space-y-2">
