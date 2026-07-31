@@ -52,22 +52,28 @@ export default function TutorCarousel({ tutors }: TutorCarouselProps) {
           <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
         </button>
 
-        <div className="rounded-[1.5rem] px-10 py-2 sm:px-14 lg:px-16">
+        <div className="rounded-[1.5rem] px-12 py-2 sm:px-16 lg:px-16">
           <Swiper
             modules={[Navigation, Pagination]}
             loop={true}
             centeredSlides={true}
-            slidesPerView={3}
+            slidesPerView={1}
             slidesPerGroup={1}
-            spaceBetween={28}
+            spaceBetween={16}
+            breakpoints={{
+              1024: {
+                slidesPerView: 3,
+                spaceBetween: 28,
+              },
+            }}
             navigation={{ prevEl: '.custom-prev', nextEl: '.custom-next' }}
             pagination={{ clickable: true }}
             className="pb-10"
           >
             {carouselItems.map((tutor, index) => (
-              <SwiperSlide key={`${tutor.id ?? tutor['@id'] ?? 'tutor'}-${index}`}>
+              <SwiperSlide key={`${tutor.id ?? tutor['@id'] ?? 'tutor'}-${index}`} className="overflow-hidden" style={{ overflow: 'hidden' }}>
                 {({ isActive }) => (
-                  <div className="h-full w-full px-1 sm:px-2 lg:px-3">
+                  <div className="h-full w-full min-w-0 px-2">
                     <div className="h-full">
                       <TutorCard tutor={tutor} isActive={isActive} />
                     </div>

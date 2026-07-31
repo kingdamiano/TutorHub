@@ -11,7 +11,12 @@ type AuthModalContextValue = {
   closeAuthModal: () => void;
 };
 
-const AuthModalContext = createContext<AuthModalContextValue | undefined>(undefined);
+const defaultAuthModalContext: AuthModalContextValue = {
+  openAuthModal: () => undefined,
+  closeAuthModal: () => undefined,
+};
+
+const AuthModalContext = createContext<AuthModalContextValue>(defaultAuthModalContext);
 
 export function AuthModalProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,11 +42,7 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
 }
 
 export function useAuthModal() {
-  const context = useContext(AuthModalContext);
-  if (!context) {
-    throw new Error('useAuthModal must be used within AuthModalProvider');
-  }
-  return context;
+  return useContext(AuthModalContext);
 }
 
 export default function AuthModal({

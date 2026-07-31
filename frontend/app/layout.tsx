@@ -31,28 +31,30 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${fraunces.variable} ${notoSans.variable} bg-background`}>
       <body className="min-h-screen bg-background font-sans antialiased text-white">
-        <div className="flex min-h-screen flex-col">
-          <AuthModalProvider>
+        <AuthModalProvider>
+          <div className="flex min-h-screen flex-col">
             <header className="sticky top-0 z-40 border-b border-border/70 bg-background/90 backdrop-blur-xl">
-            <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-6 lg:px-8">
-              <Link href="/" className="flex items-center gap-2.5 text-white whitespace-nowrap">
-                <span className="flex h-9 w-9 items-center justify-center rounded-full border border-border/80 bg-secondary/70 text-white shadow-sm">
-                  <LampDesk className="h-4 w-4" />
-                </span>
-                <span className="font-sans text-base font-semibold tracking-tight text-white sm:text-lg md:text-xl whitespace-nowrap">
-                  Study Lamp
-                </span>
-              </Link>
+              <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-6 lg:px-8">
+                <Link href="/" className="flex items-center gap-2.5 whitespace-nowrap text-white">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-border/80 bg-secondary/70 text-white shadow-sm">
+                    <LampDesk className="h-4 w-4" />
+                  </span>
+                  <span className="whitespace-nowrap font-sans text-base font-semibold tracking-tight text-white sm:text-lg md:text-xl">
+                    Study Lamp
+                  </span>
+                </Link>
 
-              <AuthStatus />
-            </div>
-          </header>
+                <AuthStatus />
+              </div>
+            </header>
+
             {children}
+
             <div className="mt-auto">
               <Footer />
             </div>
-          </AuthModalProvider>
-        </div>
+          </div>
+        </AuthModalProvider>
       </body>
     </html>
   );

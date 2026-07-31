@@ -23,28 +23,40 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 async function fetchTutors(subjectQuery?: string): Promise<RawTutor[]> {
-  const q = subjectQuery ?? '';
-  const apiUrl = buildApiUrl(`/api/tutor_profiles?itemsPerPage=50${q}`);
-  const res = await fetch(apiUrl, {
-    cache: 'no-store',
-  });
-  if (!res.ok) {
-    throw new Error('Failed to fetch tutors');
+  try {
+    const q = subjectQuery ?? '';
+    const apiUrl = buildApiUrl(`/api/tutor_profiles?itemsPerPage=50${q}`);
+    const res = await fetch(apiUrl, {
+      cache: 'no-store',
+    });
+    if (!res.ok) {
+      console.error('Failed to fetch tutors:', res.status, res.statusText);
+      return [];
+    }
+    const data = await res.json();
+    const members = data['hydra:member'] ?? [];
+    return members;
+  } catch (error) {
+    console.error('Tutors fetch error:', error);
+    return [];
   }
-  const data = await res.json();
-  const members = data['hydra:member'] ?? [];
-  return members;
 }
 
 async function fetchSubjects() {
-  const res = await fetch(buildApiUrl('/api/subjects?itemsPerPage=100'), {
-    cache: 'no-store',
-  });
-  if (!res.ok) {
+  try {
+    const res = await fetch(buildApiUrl('/api/subjects?itemsPerPage=100'), {
+      cache: 'no-store',
+    });
+    if (!res.ok) {
+      console.error('Failed to fetch subjects:', res.status, res.statusText);
+      return [];
+    }
+    const data = await res.json();
+    return data['hydra:member'] ?? [];
+  } catch (error) {
+    console.error('Subjects fetch error:', error);
     return [];
   }
-  const data = await res.json();
-  return data['hydra:member'] ?? [];
 }
 
 function getSubjectId(subject: RawSubject) {
