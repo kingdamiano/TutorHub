@@ -27,7 +27,7 @@ export default function AuthStatus() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isSecondaryMenuOpen, setIsSecondaryMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isMobileMenuMounted, setIsMobileMenuMounted] = useState(false);
+  const [shouldRenderMenu, setShouldRenderMenu] = useState(false);
   const mobileMenuRootRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -116,12 +116,11 @@ export default function AuthStatus() {
 
   useEffect(() => {
     if (isMobileMenuOpen) {
-      setIsMobileMenuMounted(true);
+      setShouldRenderMenu(true);
     } else {
-      const t = setTimeout(() => setIsMobileMenuMounted(false), 200);
-      return () => clearTimeout(t);
+      const timer = setTimeout(() => setShouldRenderMenu(false), 200);
+      return () => clearTimeout(timer);
     }
-    return;
   }, [isMobileMenuOpen]);
 
   useEffect(() => {
@@ -245,25 +244,10 @@ export default function AuthStatus() {
           {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
 
-        {isMobileMenuMounted && (
+        {shouldRenderMenu && (
           <div
-            className="absolute right-0 top-full z-[60] mt-3 w-72 rounded-2xl border border-white/10 bg-[#3D1534]/95 p-3 shadow-2xl backdrop-blur-xl transform origin-top-right transition-all duration-200"
-            style={{
-              opacity: isMobileMenuOpen ? 1 : 0,
-              transform: isMobileMenuOpen ? 'translateY(0) scale(1)' : 'translateY(-6px) scale(0.98)'
-            }}
+            className={`absolute right-0 top-full z-[60] mt-[22px] w-72 rounded-2xl border border-white/10 bg-[#3D1534]/95 pt-[1px] pb-3 px-3 shadow-2xl backdrop-blur-xl transform origin-top-right transition-all duration-200 ease-out ${isMobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
           >
-            <div className="flex items-center justify-between pb-3">
-              <p className="ml-2 text-sm font-semibold text-white">Навигация</p>
-              <button
-                type="button"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="inline-flex h-8 w-8 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white"
-                aria-label="Закрыть меню"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
 
             <div className="mt-3 flex flex-col gap-2">
               {userEmail ? (
@@ -275,7 +259,7 @@ export default function AuthStatus() {
                   <Link
                     href="/dashboard"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="rounded-xl px-3 py-2 text-sm font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-[#F6E0B6]"
+                    className={`rounded-xl px-3 py-2 text-sm font-medium transition-colors ${pathname === '/dashboard' ? 'text-[#F6E0B6] font-semibold bg-white/5' : 'text-white/80 hover:bg-[#F6E0B6]/20 hover:text-[#F6E0B6]'}`}
                   >
                     Личный кабинет
                   </Link>
@@ -284,7 +268,7 @@ export default function AuthStatus() {
                       key={link.href}
                       href={link.href}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="rounded-xl px-3 py-2 text-sm font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-[#F6E0B6]"
+                      className={`rounded-xl px-3 py-2 text-sm font-medium transition-colors ${pathname === link.href ? 'text-[#F6E0B6] font-semibold bg-white/5' : 'text-white/80 hover:bg-[#F6E0B6]/20 hover:text-[#F6E0B6]'}`}
                     >
                       {link.label}
                     </Link>
