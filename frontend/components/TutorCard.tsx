@@ -98,22 +98,22 @@ export default function TutorCard({ tutor, isActive }: { tutor: TutorProfile; is
         <div className="flex h-[160px] flex-col justify-between bg-white p-4">
           <div className="space-y-2">
             <div className="flex items-center justify-between gap-3">
-              <h3 className="min-w-0 truncate text-base font-semibold text-foreground">{title}</h3>
+              <h3 className="min-w-0 truncate text-sm sm:text-base font-semibold text-foreground">{title}</h3>
             </div>
-            <p className="text-xs text-muted-foreground">{city} · {price} ₽/ч</p>
+            <p className="text-[10px] sm:text-sm text-muted-foreground">{city} · {price} ₽/ч</p>
           </div>
 
-          <div className="flex items-center gap-2 overflow-hidden whitespace-nowrap text-[11px]">
+          <div className="flex items-center gap-2 overflow-hidden whitespace-nowrap text-[10px] sm:text-[11px]">
             {visibleSubjects.map((subject, index) => (
               <span
                 key={`${subject}-${index}`}
-                className="flex-shrink-0 rounded-full border border-border bg-[#F6F6FF] px-3 py-1 font-medium text-[#0B3D91]"
+                className="flex-shrink-0 rounded-full border border-border bg-[#F6F6FF] px-2.5 py-1 font-medium text-[#0B3D91]"
               >
                 {subject}
               </span>
             ))}
             {extraCount > 0 && (
-              <span className="flex-shrink-0 rounded-full border border-border bg-[#F6F6FF] px-3 py-1 font-medium text-[#0B3D91]">
+              <span className="flex-shrink-0 rounded-full border border-border bg-[#F6F6FF] px-2.5 py-1 font-medium text-[#0B3D91]">
                 +{extraCount}
               </span>
             )}

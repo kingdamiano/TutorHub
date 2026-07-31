@@ -6,10 +6,10 @@ export default function TutorGrid({ tutors }: { tutors: any[] }) {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+    <div className="grid grid-cols-2 gap-6 lg:grid-cols-3">
       {tutors.map((t) => (
         <div key={t['@id'] ?? t.id} className="flex justify-center">
-          <div className="w-full max-w-sm overflow-visible">
+          <div className="w-full max-w-sm min-w-0 overflow-visible">
             <TutorCard tutor={t} />
           </div>
         </div>
