@@ -25,6 +25,14 @@ function getInitials(tutor: any) {
   return initials || 'T';
 }
 
+function resolvePhotoSrc(photo: string | null | undefined) {
+  if (!photo) return '';
+  if (/^https?:\/\//i.test(photo)) return photo;
+
+  const baseUrl = (process.env.NEXT_PUBLIC_API_URL ?? 'http://127.0.0.1:8000').replace(/\/$/, '');
+  return `${baseUrl}${photo.startsWith('/') ? '' : '/'}${photo}`;
+}
+
 async function fetchTutor(id: string) {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tutor_profiles/${id}`, {
@@ -113,6 +121,8 @@ export default async function TutorProfilePage({ params }: TutorPageProps) {
   const initials = getInitials(tutor);
   const rating = tutor.rating !== undefined ? Number(tutor.rating).toFixed(1) : '—';
   const price = tutor.pricePerHour ?? '—';
+  const hasPhoto = Boolean(tutor.photo);
+  const photoSrc = resolvePhotoSrc(tutor.photo);
 
   return (
     <main className="relative bg-[#3D1534] px-4 py-10 sm:px-6 lg:px-8">
@@ -122,8 +132,19 @@ export default async function TutorProfilePage({ params }: TutorPageProps) {
         <section className="rounded-[1.25rem] border border-[#3D1534]/10 bg-[#FFF4EB] p-6 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.24)] backdrop-blur-xl sm:p-8">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
             <div className="flex items-start gap-4">
-              <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-[#3D1534] text-3xl font-semibold text-white shadow-sm">
-                {initials}
+              <div className="relative h-20 w-20 overflow-hidden rounded-3xl bg-[#3D1534] shadow-sm">
+                {hasPhoto ? (
+                  <img
+                    src={photoSrc}
+                    alt={title}
+                    loading="lazy"
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-3xl font-semibold text-white">
+                    {initials}
+                  </div>
+                )}
               </div>
               <div className="flex-1">
                 <div className="flex flex-wrap items-center gap-3">

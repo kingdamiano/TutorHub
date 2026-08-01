@@ -1,4 +1,4 @@
-import { ChevronRight, Play, Star } from 'lucide-react';
+import { ChevronRight, Star } from 'lucide-react';
 import Link from 'next/link';
 
 type TutorProfile = {
@@ -7,6 +7,7 @@ type TutorProfile = {
   name?: string | null;
   city?: string | null;
   bio?: string | null;
+  photo?: string | null;
   pricePerHour?: string | number | null;
   subjects?: Array<any> | null;
   user?: string | { id?: number | string; email?: string } | null;
@@ -42,6 +43,14 @@ function getInitials(tutor: TutorProfile) {
   return letters.join('') || 'T';
 }
 
+function resolvePhotoSrc(photo: string | null | undefined) {
+  if (!photo) return '';
+  if (/^https?:\/\//i.test(photo)) return photo;
+
+  const baseUrl = (process.env.NEXT_PUBLIC_API_URL ?? 'http://127.0.0.1:8000').replace(/\/$/, '');
+  return `${baseUrl}${photo.startsWith('/') ? '' : '/'}${photo}`;
+}
+
 export default function TutorCard({ tutor, isActive }: { tutor: TutorProfile; isActive?: boolean }) {
   const id = getTutorId(tutor);
   const price = tutor.pricePerHour ?? '—';
@@ -59,6 +68,8 @@ export default function TutorCard({ tutor, isActive }: { tutor: TutorProfile; is
     .filter(Boolean);
   const visibleSubjects = subjectNames.slice(0, 2);
   const extraCount = Math.max(0, subjectNames.length - visibleSubjects.length);
+  const hasPhoto = Boolean(tutor.photo);
+  const photoSrc = resolvePhotoSrc(tutor.photo);
 
   return (
     <Link
@@ -69,13 +80,18 @@ export default function TutorCard({ tutor, isActive }: { tutor: TutorProfile; is
     >
       <div className="flex h-full flex-col overflow-hidden rounded-2xl">
         <div className="relative h-[190px] overflow-hidden rounded-t-2xl bg-gradient-to-br from-[#3D1534] to-[#3E4B8E]">
-          <div className="absolute inset-0 flex items-center justify-center text-5xl font-semibold tracking-[0.08em] text-white/90">
-            {initials}
-          </div>
-
-          <div className="absolute left-4 bottom-4 flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-white/20 backdrop-blur-sm">
-            <Play className="h-5 w-5 text-white" />
-          </div>
+          {hasPhoto ? (
+            <img
+              src={photoSrc}
+              alt={title}
+              loading="lazy"
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center text-5xl font-semibold tracking-[0.08em] text-white/90">
+              {initials}
+            </div>
+          )}
 
           <div className="absolute right-4 top-4 rounded-full bg-black/40 px-3 py-1 text-xs text-white backdrop-blur-sm">
             <div className="flex items-center gap-1">
