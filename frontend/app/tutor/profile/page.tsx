@@ -2,9 +2,19 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { Pencil } from 'lucide-react';
 import BackgroundBlobs from '../../../components/BackgroundBlobs';
 
 type Subject = { '@id'?: string; id?: number; name?: string };
+
+type FormSnapshot = {
+  name: string;
+  photo: string;
+  bio: string;
+  city: string;
+  pricePerHour: string;
+  selectedSubjects: string[];
+};
 
 function getCookieValue(name: string) {
   if (typeof document === 'undefined') return null;
@@ -30,6 +40,8 @@ export default function TutorProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editSnapshot, setEditSnapshot] = useState<FormSnapshot | null>(null);
 
   const [name, setName] = useState('');
   const [photo, setPhoto] = useState('');
@@ -83,15 +95,18 @@ export default function TutorProfilePage() {
                   ...tpJson,
                   isApproved: tpJson.isApproved ?? false,
                 };
-                setTutorProfile(normalizedTutorProfile);
-                setName(tpJson.name ?? '');
-                setPhoto(tpJson.photo ?? '');
-                setBio(tpJson.bio ?? '');
-                setCity(tpJson.city ?? '');
-                setPricePerHour(tpJson.pricePerHour ?? '');
-                // subjects may be IRIs array or objects
                 const subjIris: string[] = (tpJson.subjects ?? []).map((s: any) => (typeof s === 'string' ? s : s['@id']));
-                setSelectedSubjects(subjIris.filter(Boolean));
+                const nextSnapshot: FormSnapshot = {
+                  name: tpJson.name ?? '',
+                  photo: tpJson.photo ?? '',
+                  bio: tpJson.bio ?? '',
+                  city: tpJson.city ?? '',
+                  pricePerHour: tpJson.pricePerHour ?? '',
+                  selectedSubjects: subjIris.filter(Boolean),
+                };
+                setTutorProfile(normalizedTutorProfile);
+                applySnapshotToForm(nextSnapshot);
+                setEditSnapshot(nextSnapshot);
               }
             }
           }
@@ -111,6 +126,36 @@ export default function TutorProfilePage() {
 
     load();
   }, []);
+
+  const getCurrentFormSnapshot = (): FormSnapshot => ({
+    name,
+    photo,
+    bio,
+    city,
+    pricePerHour,
+    selectedSubjects,
+  });
+
+  const applySnapshotToForm = (snapshot: FormSnapshot) => {
+    setName(snapshot.name);
+    setPhoto(snapshot.photo);
+    setBio(snapshot.bio);
+    setCity(snapshot.city);
+    setPricePerHour(snapshot.pricePerHour);
+    setSelectedSubjects(snapshot.selectedSubjects);
+  };
+
+  const startEditing = () => {
+    setEditSnapshot(getCurrentFormSnapshot());
+    setIsEditing(true);
+  };
+
+  const cancelEditing = () => {
+    if (editSnapshot) {
+      applySnapshotToForm(editSnapshot);
+    }
+    setIsEditing(false);
+  };
 
   const isValidPhotoUrl = useMemo(() => {
     if (!photo) return false;
@@ -212,14 +257,18 @@ export default function TutorProfilePage() {
                 const tpText = await tpRes.text();
                 if (tpRes.ok) {
                   const tpJson = JSON.parse(tpText);
-                  setTutorProfile(tpJson);
-                  setName(tpJson.name ?? '');
-                  setPhoto(tpJson.photo ?? '');
-                  setBio(tpJson.bio ?? '');
-                  setCity(tpJson.city ?? '');
-                  setPricePerHour(tpJson.pricePerHour ?? '');
                   const subjIris: string[] = (tpJson.subjects ?? []).map((s: any) => (typeof s === 'string' ? s : s['@id']));
-                  setSelectedSubjects(subjIris.filter(Boolean));
+                  const nextSnapshot: FormSnapshot = {
+                    name: tpJson.name ?? '',
+                    photo: tpJson.photo ?? '',
+                    bio: tpJson.bio ?? '',
+                    city: tpJson.city ?? '',
+                    pricePerHour: tpJson.pricePerHour ?? '',
+                    selectedSubjects: subjIris.filter(Boolean),
+                  };
+                  setTutorProfile(tpJson);
+                  applySnapshotToForm(nextSnapshot);
+                  setEditSnapshot(nextSnapshot);
                   setMessage('Профиль уже существует — загружен для редактирования.');
                   return;
                 }
@@ -251,13 +300,18 @@ export default function TutorProfilePage() {
         console.log('VERIFY GET', iri, 'status=', verifyRes.status, 'body=', verifyText);
         if (verifyRes.ok) {
           const verified = JSON.parse(verifyText);
+          const savedSnapshot: FormSnapshot = {
+            name: verified.name ?? name,
+            photo: verified.photo ?? photo,
+            bio: verified.bio ?? bio,
+            city: verified.city ?? city,
+            pricePerHour: verified.pricePerHour ?? pricePerHour,
+            selectedSubjects: Array.isArray(verified.subjects) ? verified.subjects.map((s: any) => (typeof s === 'string' ? s : s['@id'])).filter(Boolean) : selectedSubjects,
+          };
           setTutorProfile(verified);
-          setName(verified.name ?? name);
-          setPhoto(verified.photo ?? photo);
-          setBio(verified.bio ?? bio);
-          setCity(verified.city ?? city);
-          setPricePerHour(verified.pricePerHour ?? pricePerHour);
-          setSelectedSubjects(Array.isArray(verified.subjects) ? verified.subjects.map((s: any) => (typeof s === 'string' ? s : s['@id'])).filter(Boolean) : selectedSubjects);
+          applySnapshotToForm(savedSnapshot);
+          setEditSnapshot(savedSnapshot);
+          setIsEditing(false);
           if (verified.isApproved) {
             setMessage('Профиль создан успешно.');
           } else {
@@ -265,13 +319,18 @@ export default function TutorProfilePage() {
           }
         } else if (verifyRes.status === 403) {
           console.warn('Verification returned 403 for an unapproved profile. Treating creation as successful for the owner.', verifyRes.status, verifyText);
+          const savedSnapshot: FormSnapshot = {
+            name: created.name ?? name,
+            photo: created.photo ?? photo,
+            bio: created.bio ?? bio,
+            city: created.city ?? city,
+            pricePerHour: created.pricePerHour ?? pricePerHour,
+            selectedSubjects: Array.isArray(created.subjects) ? created.subjects.map((s: any) => (typeof s === 'string' ? s : s['@id'])).filter(Boolean) : selectedSubjects,
+          };
           setTutorProfile(created);
-          setName(created.name ?? name);
-          setPhoto(created.photo ?? photo);
-          setBio(created.bio ?? bio);
-          setCity(created.city ?? city);
-          setPricePerHour(created.pricePerHour ?? pricePerHour);
-          setSelectedSubjects(Array.isArray(created.subjects) ? created.subjects.map((s: any) => (typeof s === 'string' ? s : s['@id'])).filter(Boolean) : selectedSubjects);
+          applySnapshotToForm(savedSnapshot);
+          setEditSnapshot(savedSnapshot);
+          setIsEditing(false);
           setMessage('Профиль создан успешно и отправлен на модерацию. Как только администратор его одобрит, он появится в публичном каталоге.');
         } else {
           throw new Error(`Creation reported success but verification failed: status=${verifyRes.status} body=${verifyText}`);
@@ -283,13 +342,18 @@ export default function TutorProfilePage() {
         console.log('VERIFY COLLECTION status=', coll.status, 'body=', collText);
         if (!coll.ok) {
           if (coll.status === 403) {
+            const savedSnapshot: FormSnapshot = {
+              name: created.name ?? name,
+              photo: created.photo ?? photo,
+              bio: created.bio ?? bio,
+              city: created.city ?? city,
+              pricePerHour: created.pricePerHour ?? pricePerHour,
+              selectedSubjects: Array.isArray(created.subjects) ? created.subjects.map((s: any) => (typeof s === 'string' ? s : s['@id'])).filter(Boolean) : selectedSubjects,
+            };
             setTutorProfile(created);
-            setName(created.name ?? name);
-            setPhoto(created.photo ?? photo);
-            setBio(created.bio ?? bio);
-            setCity(created.city ?? city);
-            setPricePerHour(created.pricePerHour ?? pricePerHour);
-            setSelectedSubjects(Array.isArray(created.subjects) ? created.subjects.map((s: any) => (typeof s === 'string' ? s : s['@id'])).filter(Boolean) : selectedSubjects);
+            applySnapshotToForm(savedSnapshot);
+            setEditSnapshot(savedSnapshot);
+            setIsEditing(false);
             setMessage('Профиль создан успешно и отправлен на модерацию. Как только администратор его одобрит, он появится в публичном каталоге.');
             return;
           }
@@ -303,7 +367,18 @@ export default function TutorProfilePage() {
           return u && (u['@id'] === `/api/users/${me.id}` || u.id === me.id);
         });
         if (!my) throw new Error('Profile not found in collection after creation');
+        const savedSnapshot: FormSnapshot = {
+          name: my.name ?? name,
+          photo: my.photo ?? photo,
+          bio: my.bio ?? bio,
+          city: my.city ?? city,
+          pricePerHour: my.pricePerHour ?? pricePerHour,
+          selectedSubjects: Array.isArray(my.subjects) ? my.subjects.map((s: any) => (typeof s === 'string' ? s : s['@id'])).filter(Boolean) : selectedSubjects,
+        };
         setTutorProfile(my);
+        applySnapshotToForm(savedSnapshot);
+        setEditSnapshot(savedSnapshot);
+        setIsEditing(false);
         setMessage('Профиль создан успешно.');
       }
     } catch (e: any) {
@@ -353,10 +428,21 @@ export default function TutorProfilePage() {
       console.log('updated response from server:', updated);
       const updatedIsApproved = Boolean(updated?.isApproved);
       console.log('updatedIsApproved:', updatedIsApproved);
+      const savedSnapshot: FormSnapshot = {
+        name: updated?.name ?? name,
+        photo: updated?.photo ?? photo,
+        bio: updated?.bio ?? bio,
+        city: updated?.city ?? city,
+        pricePerHour: updated?.pricePerHour ?? pricePerHour,
+        selectedSubjects: Array.isArray(updated?.subjects) ? updated.subjects.map((s: any) => (typeof s === 'string' ? s : s['@id'])).filter(Boolean) : selectedSubjects,
+      };
       setTutorProfile({
         ...updated,
         isApproved: updated?.isApproved ?? false,
       });
+      applySnapshotToForm(savedSnapshot);
+      setEditSnapshot(savedSnapshot);
+      setIsEditing(false);
 
       if (wasApproved && updatedIsApproved) {
         setMessage('Профиль обновлён успешно.');
@@ -399,105 +485,188 @@ export default function TutorProfilePage() {
         </div>
       )}
 
-      <form onSubmit={tutorProfile ? handleUpdate : handleCreate} className="mt-6 space-y-5">
-        <div>
-          <label className="mb-2 block text-sm font-medium text-foreground">Имя</label>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full rounded-md border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
-            placeholder="Ваше имя"
-          />
-        </div>
-
-        <div>
-          <label className="mb-2 block text-sm font-medium text-foreground">Ссылка на фото</label>
-          <input
-            value={photo}
-            onChange={(e) => setPhoto(e.target.value)}
-            className="w-full rounded-md border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
-            placeholder="https://example.com/photo.jpg"
-          />
-          {isValidPhotoUrl && (
-            <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-white/90 shadow-sm">
-              <img src={photo} alt="Превью фото" className="h-52 w-full object-cover" />
+      {isEditing ? (
+        <form onSubmit={tutorProfile ? handleUpdate : handleCreate} className="mt-6 space-y-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-semibold text-[#3D1534]">Редактирование профиля</h2>
+              <p className="text-sm text-[#3D1534]/70">Изменяйте данные и нажмите «Сохранить».</p>
             </div>
-          )}
-        </div>
+          </div>
 
-        <div>
-          <label className="mb-2 block text-sm font-medium text-foreground">Bio</label>
-          <textarea
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            rows={6}
-            required
-            className="w-full rounded-md border border-border bg-white px-3 py-3 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
-            placeholder="Расскажите о своём опыте и подходе к обучению"
-          />
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="mb-2 block text-sm font-medium text-foreground">Город</label>
+            <label className="mb-2 block text-sm font-medium text-foreground">Имя</label>
             <input
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className="w-full rounded-md border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
-              placeholder="Например, Москва"
+              placeholder="Ваше имя"
             />
           </div>
+
           <div>
-            <label className="mb-2 block text-sm font-medium text-foreground">Цена за час</label>
+            <label className="mb-2 block text-sm font-medium text-foreground">Ссылка на фото</label>
             <input
-              type="number"
-              step="1"
-              min="1"
-              value={pricePerHour}
-              onChange={(e) => setPricePerHour(e.target.value)}
-              required
+              value={photo}
+              onChange={(e) => setPhoto(e.target.value)}
               className="w-full rounded-md border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
-              placeholder="3000"
+              placeholder="https://example.com/photo.jpg"
+            />
+            {isValidPhotoUrl && (
+              <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-white/90 shadow-sm">
+                <img src={photo} alt="Превью фото" className="h-52 w-full object-cover" />
+              </div>
+            )}
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-foreground">Bio</label>
+            <textarea
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              rows={6}
+              required
+              className="w-full rounded-md border border-border bg-white px-3 py-3 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+              placeholder="Расскажите о своём опыте и подходе к обучению"
             />
           </div>
-        </div>
 
-        <div>
-          <label className="mb-2 block text-sm font-medium text-foreground">Предметы</label>
-          {subjects.length === 0 && <div className="text-sm text-muted-foreground">Загрузка предметов…</div>}
-          <div className="mt-3 flex flex-wrap gap-2">
-            {subjects.map((s) => {
-              const iri = s['@id'] ?? `/api/subjects/${s.id}`;
-              const active = selectedSubjects.includes(iri);
-              return (
-                <label
-                  key={iri}
-                  className={`cursor-pointer rounded-md border px-3 py-2 text-sm font-medium transition ${active ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-white text-[#3D1534] hover:bg-[#F6E0B6] hover:text-[#3D1534]'}`}
-                >
-                  <input
-                    type="checkbox"
-                    className="sr-only"
-                    checked={active}
-                    onChange={() => handleSubjectToggle(iri)}
-                  />
-                  {s.name}
-                </label>
-              );
-            })}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-foreground">Город</label>
+              <input
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                required
+                className="w-full rounded-md border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+                placeholder="Например, Москва"
+              />
+            </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-foreground">Цена за час</label>
+              <input
+                type="number"
+                step="1"
+                min="1"
+                value={pricePerHour}
+                onChange={(e) => setPricePerHour(e.target.value)}
+                required
+                className="w-full rounded-md border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+                placeholder="3000"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-foreground">Предметы</label>
+            {subjects.length === 0 && <div className="text-sm text-muted-foreground">Загрузка предметов…</div>}
+            <div className="mt-3 flex flex-wrap gap-2">
+              {subjects.map((s) => {
+                const iri = s['@id'] ?? `/api/subjects/${s.id}`;
+                const active = selectedSubjects.includes(iri);
+                return (
+                  <label
+                    key={iri}
+                    className={`cursor-pointer rounded-md border px-3 py-2 text-sm font-medium transition ${active ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-white text-[#3D1534] hover:bg-[#F6E0B6] hover:text-[#3D1534]'}`}
+                  >
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={active}
+                      onChange={() => handleSubjectToggle(iri)}
+                    />
+                    {s.name}
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-3 pt-2">
+            <button
+              type="submit"
+              disabled={saving}
+              className="rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {tutorProfile ? 'Сохранить' : 'Создать профиль'}
+            </button>
+            <button
+              type="button"
+              onClick={cancelEditing}
+              className="rounded-full border border-border bg-white px-5 py-3 text-sm font-medium text-[#3D1534] transition hover:bg-[#F6E0B6]"
+            >
+              Отменить
+            </button>
+          </div>
+        </form>
+      ) : (
+        <div className="mt-6 space-y-5">
+          <div className="flex flex-wrap items-start justify-between gap-3 rounded-2xl border border-[#F6E0B6]/50 bg-white/70 p-4">
+            <div>
+              <p className="font-sans text-sm font-medium text-[#3D1534]">Просмотр профиля</p>
+              <p className="mt-1 text-sm text-[#3D1534]/75">Сейчас вы видите опубликованную информацию о себе. Нажмите кнопку, чтобы внести изменения.</p>
+            </div>
+            <button
+              type="button"
+              onClick={startEditing}
+              className="inline-flex items-center gap-2 rounded-full border border-[#F6E0B6] bg-[#F6E0B6]/40 px-4 py-2 text-sm font-medium text-[#3D1534] transition hover:bg-[#F6E0B6]"
+            >
+              <Pencil className="h-4 w-4" />
+              Редактировать
+            </button>
+          </div>
+
+          <div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
+            <div className="rounded-2xl border border-[#F6E0B6]/50 bg-white/80 p-5 shadow-sm">
+              <p className="font-sans text-sm font-medium text-[#3D1534]">Имя</p>
+              <p className="mt-2 text-lg font-semibold text-[#3D1534]">{name || 'Пока не указано'}</p>
+
+              <p className="mt-5 font-sans text-sm font-medium text-[#3D1534]">Bio</p>
+              <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-[#3D1534]/80">{bio || 'Пока нет описания.'}</p>
+            </div>
+
+            <div className="rounded-2xl border border-[#F6E0B6]/50 bg-white/80 p-5 shadow-sm">
+              <p className="font-sans text-sm font-medium text-[#3D1534]">Фото</p>
+              {isValidPhotoUrl ? (
+                <div className="mt-3 overflow-hidden rounded-2xl border border-border bg-white/90 shadow-sm">
+                  <img src={photo} alt="Фото репетитора" className="h-52 w-full object-cover" />
+                </div>
+              ) : (
+                <p className="mt-3 text-sm text-[#3D1534]/70">Фото ещё не добавлено.</p>
+              )}
+            </div>
+          </div>
+
+          <div className="grid gap-5 md:grid-cols-2">
+            <div className="rounded-2xl border border-[#F6E0B6]/50 bg-white/80 p-5 shadow-sm">
+              <p className="font-sans text-sm font-medium text-[#3D1534]">Город</p>
+              <p className="mt-2 text-base font-semibold text-[#3D1534]">{city || 'Пока не указан'}</p>
+            </div>
+            <div className="rounded-2xl border border-[#F6E0B6]/50 bg-white/80 p-5 shadow-sm">
+              <p className="font-sans text-sm font-medium text-[#3D1534]">Цена за час</p>
+              <p className="mt-2 text-base font-semibold text-[#3D1534]">{pricePerHour ? `${pricePerHour} ₽/ч` : 'Пока не указана'}</p>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-[#F6E0B6]/50 bg-white/80 p-5 shadow-sm">
+            <p className="font-sans text-sm font-medium text-[#3D1534]">Предметы</p>
+            {selectedSubjects.length > 0 ? (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {selectedSubjects.map((subjectIri) => {
+                  const subject = subjects.find((item) => (item['@id'] ?? `/api/subjects/${item.id}`) === subjectIri);
+                  return (
+                    <span key={subjectIri} className="rounded-full border border-border bg-[#F6F6FF] px-3 py-1 text-sm font-medium text-[#0B3D91]">
+                      {subject?.name ?? subjectIri}
+                    </span>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="mt-3 text-sm text-[#3D1534]/70">Предметы ещё не выбраны.</p>
+            )}
           </div>
         </div>
-
-        <div className="pt-2">
-          <button
-            type="submit"
-            disabled={saving}
-            className="rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
-          >
-            {tutorProfile ? 'Сохранить' : 'Создать профиль'}
-          </button>
-        </div>
-      </form>
+      )}
     </section>
   );
 }

@@ -309,7 +309,7 @@ export default function DashboardPage() {
           <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
           {me && (
             <section className="rounded-[16px] border border-white/20 bg-[#FFF4EB]/95 p-6 shadow-[0_16px_40px_-20px_rgba(15,23,42,0.2)]">
-              <p className="text-sm font-medium uppercase tracking-[0.24em] text-[#3D1534]/70">Профиль</p>
+              <p className="text-xl font-semibold text-[#3D1534]">Профиль</p>
               <div className="mt-4 rounded-lg border border-[#3D1534]/10 bg-white/80 p-4">
                 <p className="text-sm font-semibold text-[#3D1534]">{me.email}</p>
                 <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-[#3D1534]/70">
@@ -325,7 +325,7 @@ export default function DashboardPage() {
           )}
 
           <section className="rounded-[16px] border border-white/20 bg-[#FFF4EB]/95 p-6 shadow-[0_16px_40px_-20px_rgba(15,23,42,0.2)]">
-            <p className="text-sm font-medium uppercase tracking-[0.24em] text-[#3D1534]/70">Кратко</p>
+            <p className="text-xl font-semibold text-[#3D1534]">Кратко</p>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               <div className="min-w-0 rounded-lg border border-[#3D1534]/10 bg-white/85 p-4">
                 <p className="text-sm text-[#3D1534]/70">Активных заявок</p>
