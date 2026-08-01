@@ -71,7 +71,7 @@ export default function TutorCarousel({ tutors }: TutorCarouselProps) {
             className="pb-10"
           >
             {carouselItems.map((tutor, index) => (
-              <SwiperSlide key={`${tutor.id ?? tutor['@id'] ?? 'tutor'}-${index}`} className="overflow-hidden" style={{ overflow: 'hidden' }}>
+              <SwiperSlide key={`${tutor.id ?? tutor['@id'] ?? 'tutor'}-${index}`} className="overflow-visible" style={{ overflow: 'visible' }}>
                 {({ isActive }) => (
                   <div className="h-full w-full min-w-0 px-2">
                     <div className="h-full">

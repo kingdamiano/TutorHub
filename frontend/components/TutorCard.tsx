@@ -4,6 +4,7 @@ import Link from 'next/link';
 type TutorProfile = {
   '@id'?: string;
   id?: number | string;
+  name?: string | null;
   city?: string | null;
   bio?: string | null;
   pricePerHour?: string | number | null;
@@ -21,23 +22,16 @@ function getTutorId(tutor: TutorProfile) {
 }
 
 function getCardTitle(tutor: TutorProfile) {
-  const bio = tutor.bio?.trim();
-  if (bio) {
-    const words = bio.split(/\s+/).filter(Boolean);
-    const preview = words.slice(0, 6).join(' ');
-    return preview.length < bio.length ? `${preview}…` : preview;
+  const name = tutor.name?.trim();
+  if (name) {
+    return name;
   }
-  if (tutor.user && typeof tutor.user !== 'string' && tutor.user.email) {
-    return tutor.user.email.split('@')[0];
-  }
-  if (tutor.city) {
-    return tutor.city;
-  }
+
   return 'Репетитор';
 }
 
 function getInitials(tutor: TutorProfile) {
-  const source = [tutor.user && typeof tutor.user !== 'string' ? tutor.user.email : '', tutor.city, tutor.bio]
+  const source = [tutor.name, tutor.city, tutor.user && typeof tutor.user !== 'string' ? tutor.user.email : '']
     .filter(Boolean)
     .join(' ');
   const letters = source
@@ -69,11 +63,11 @@ export default function TutorCard({ tutor, isActive }: { tutor: TutorProfile; is
   return (
     <Link
       href={`/tutors/${id}`}
-      className={`group block h-[300px] w-full overflow-hidden rounded-2xl border-[0.5px] border-[rgba(245,222,179,0.4)] bg-white shadow-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl ${
+      className={`group block h-[300px] w-full rounded-2xl border-[0.5px] border-[rgba(245,222,179,0.4)] bg-white shadow-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl ${
         isActive ? 'scale-100 shadow-2xl lg:scale-105' : 'scale-100 lg:scale-95'
       }`}
     >
-      <div className="flex h-full flex-col">
+      <div className="flex h-full flex-col overflow-hidden rounded-2xl">
         <div className="relative h-[190px] overflow-hidden rounded-t-2xl bg-gradient-to-br from-[#3D1534] to-[#3E4B8E]">
           <div className="absolute inset-0 flex items-center justify-center text-5xl font-semibold tracking-[0.08em] text-white/90">
             {initials}

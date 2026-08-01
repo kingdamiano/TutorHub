@@ -107,7 +107,7 @@
   width: 100%;
   height: auto;
   min-height: 420px;
-  padding-top: 36px;
+  padding-top: 0;
   padding-bottom: 40px;
   box-sizing: border-box;
   overflow: hidden !important;

@@ -10,15 +10,9 @@ interface TutorPageProps {
 }
 
 function getTutorTitle(tutor: any) {
-  const bio = tutor?.bio?.trim();
-  if (bio) {
-    const words = bio.split(/\s+/).filter(Boolean).slice(0, 6);
-    const preview = words.join(' ');
-    return preview.length < bio.length ? `${preview}…` : preview;
-  }
-
-  if (tutor?.city) {
-    return tutor.city;
+  const name = tutor?.name?.trim();
+  if (name) {
+    return name;
   }
 
   return 'Репетитор';
