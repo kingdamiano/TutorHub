@@ -49,6 +49,9 @@ export default function TutorProfilePage() {
   const [city, setCity] = useState('');
   const [pricePerHour, setPricePerHour] = useState('');
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
+  const [selectedPhotoFile, setSelectedPhotoFile] = useState<File | null>(null);
+  const [selectedPhotoPreview, setSelectedPhotoPreview] = useState<string | null>(null);
+  const [photoError, setPhotoError] = useState<string | null>(null);
 
   useEffect(() => {
     const t = getCookieValue('token');
@@ -154,11 +157,15 @@ export default function TutorProfilePage() {
     if (editSnapshot) {
       applySnapshotToForm(editSnapshot);
     }
+    setSelectedPhotoFile(null);
+    setSelectedPhotoPreview(null);
+    setPhotoError(null);
     setIsEditing(false);
   };
 
   const isValidPhotoUrl = useMemo(() => {
     if (!photo) return false;
+    if (photo.startsWith('/')) return true;
     try {
       new URL(photo);
       return true;
@@ -166,6 +173,98 @@ export default function TutorProfilePage() {
       return false;
     }
   }, [photo]);
+
+  const getPhotoSrc = (value?: string | null) => {
+    if (!value) return '';
+    if (value.startsWith('blob:') || value.startsWith('http://') || value.startsWith('https://')) {
+      return value;
+    }
+
+    const apiBase = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
+    return `${apiBase}${value.startsWith('/') ? value : `/${value}`}`;
+  };
+
+  useEffect(() => {
+    return () => {
+      if (selectedPhotoPreview?.startsWith('blob:')) {
+        URL.revokeObjectURL(selectedPhotoPreview);
+      }
+    };
+  }, [selectedPhotoPreview]);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] ?? null;
+    if (!file) {
+      setSelectedPhotoFile(null);
+      setSelectedPhotoPreview(null);
+      setPhotoError(null);
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      setSelectedPhotoFile(null);
+      setSelectedPhotoPreview(null);
+      setPhotoError('Файл слишком большой, максимум 2 МБ');
+      event.target.value = '';
+      return;
+    }
+
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      setSelectedPhotoFile(null);
+      setSelectedPhotoPreview(null);
+      setPhotoError('Поддерживаются только JPEG, PNG и WebP');
+      event.target.value = '';
+      return;
+    }
+
+    setPhotoError(null);
+    setSelectedPhotoFile(file);
+    setSelectedPhotoPreview(URL.createObjectURL(file));
+  };
+
+  const uploadPhoto = async (profileId: number | string, authToken: string) => {
+    if (!selectedPhotoFile) {
+      return photo;
+    }
+
+    const formData = new FormData();
+    formData.append('file', selectedPhotoFile);
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tutor_profiles/${profileId}/photo`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${authToken}` },
+      body: formData,
+    });
+
+    const text = await res.text();
+    if (!res.ok) {
+      let detail = 'Не удалось загрузить фото.';
+      try {
+        const json = JSON.parse(text);
+        detail = json.message ?? detail;
+      } catch {
+        detail = text || detail;
+      }
+      throw new Error(detail);
+    }
+
+    const json = JSON.parse(text);
+    return json.photo ?? photo;
+  };
+
+  const getProfileIdFromResource = (resource: any) => {
+    if (!resource) return null;
+    if (typeof resource === 'number') return resource;
+    if (typeof resource === 'string') {
+      const parts = resource.split('/').filter(Boolean);
+      return parts[parts.length - 1] || null;
+    }
+    if (typeof resource === 'object' && resource['@id']) {
+      const parts = resource['@id'].split('/').filter(Boolean);
+      return parts[parts.length - 1] || null;
+    }
+    return resource.id ?? null;
+  };
 
   if (!token) {
     return (
@@ -217,7 +316,6 @@ export default function TutorProfilePage() {
       const body = {
         user: `/api/users/${me.id}`,
         name: name || null,
-        photo: photo || null,
         bio: bio || null,
         city: city || null,
         pricePerHour: pricePerHour || null,
@@ -292,6 +390,12 @@ export default function TutorProfilePage() {
         throw new Error(`Failed to parse creation response as JSON. Status=${res.status} body=${text}`);
       }
 
+      const profileId = getProfileIdFromResource(created['@id'] ?? created.id ?? null);
+      let uploadedPhoto = photo;
+      if (profileId && selectedPhotoFile) {
+        uploadedPhoto = await uploadPhoto(profileId, authToken);
+      }
+
       // verify resource exists by fetching returned @id (if present)
       const iri = created['@id'] ?? (created.id ? `/api/tutor_profiles/${created.id}` : null);
       if (iri) {
@@ -302,7 +406,7 @@ export default function TutorProfilePage() {
           const verified = JSON.parse(verifyText);
           const savedSnapshot: FormSnapshot = {
             name: verified.name ?? name,
-            photo: verified.photo ?? photo,
+            photo: uploadedPhoto || verified.photo || photo,
             bio: verified.bio ?? bio,
             city: verified.city ?? city,
             pricePerHour: verified.pricePerHour ?? pricePerHour,
@@ -344,7 +448,7 @@ export default function TutorProfilePage() {
           if (coll.status === 403) {
             const savedSnapshot: FormSnapshot = {
               name: created.name ?? name,
-              photo: created.photo ?? photo,
+              photo: uploadedPhoto || created.photo || photo,
               bio: created.bio ?? bio,
               city: created.city ?? city,
               pricePerHour: created.pricePerHour ?? pricePerHour,
@@ -369,7 +473,7 @@ export default function TutorProfilePage() {
         if (!my) throw new Error('Profile not found in collection after creation');
         const savedSnapshot: FormSnapshot = {
           name: my.name ?? name,
-          photo: my.photo ?? photo,
+          photo: uploadedPhoto || my.photo || photo,
           bio: my.bio ?? bio,
           city: my.city ?? city,
           pricePerHour: my.pricePerHour ?? pricePerHour,
@@ -398,7 +502,6 @@ export default function TutorProfilePage() {
       const iri = tutorProfile['@id'] ?? `/api/tutor_profiles/${id}`;
       const body: any = {
         name: name || null,
-        photo: photo || null,
         bio: bio || null,
         city: city || null,
         pricePerHour: pricePerHour || null,
@@ -428,9 +531,13 @@ export default function TutorProfilePage() {
       console.log('updated response from server:', updated);
       const updatedIsApproved = Boolean(updated?.isApproved);
       console.log('updatedIsApproved:', updatedIsApproved);
+      let uploadedPhoto = photo;
+      if (selectedPhotoFile) {
+        uploadedPhoto = await uploadPhoto(id, token);
+      }
       const savedSnapshot: FormSnapshot = {
         name: updated?.name ?? name,
-        photo: updated?.photo ?? photo,
+        photo: uploadedPhoto || updated?.photo || photo,
         bio: updated?.bio ?? bio,
         city: updated?.city ?? city,
         pricePerHour: updated?.pricePerHour ?? pricePerHour,
@@ -438,10 +545,15 @@ export default function TutorProfilePage() {
       };
       setTutorProfile({
         ...updated,
+        photo: uploadedPhoto || updated?.photo || photo,
         isApproved: updated?.isApproved ?? false,
       });
+      setPhoto(uploadedPhoto || updated?.photo || photo);
       applySnapshotToForm(savedSnapshot);
       setEditSnapshot(savedSnapshot);
+      setSelectedPhotoFile(null);
+      setSelectedPhotoPreview(null);
+      setPhotoError(null);
       setIsEditing(false);
 
       if (wasApproved && updatedIsApproved) {
@@ -505,16 +617,17 @@ export default function TutorProfilePage() {
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium text-foreground">Ссылка на фото</label>
+            <label className="mb-2 block text-sm font-medium text-foreground">Фото</label>
             <input
-              value={photo}
-              onChange={(e) => setPhoto(e.target.value)}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={handleFileChange}
               className="w-full rounded-md border border-border bg-white px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
-              placeholder="https://example.com/photo.jpg"
             />
-            {isValidPhotoUrl && (
+            {photoError && <p className="mt-2 text-sm text-red-600">{photoError}</p>}
+            {(selectedPhotoPreview || isValidPhotoUrl) && (
               <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-white/90 shadow-sm">
-                <img src={photo} alt="Превью фото" className="h-52 w-full object-cover" />
+                <img src={getPhotoSrc(selectedPhotoPreview ?? photo)} alt="Превью фото" className="h-52 w-full object-cover" />
               </div>
             )}
           </div>
@@ -629,7 +742,7 @@ export default function TutorProfilePage() {
               <p className="font-sans text-sm font-medium text-[#3D1534]">Фото</p>
               {isValidPhotoUrl ? (
                 <div className="mt-3 overflow-hidden rounded-2xl border border-border bg-white/90 shadow-sm">
-                  <img src={photo} alt="Фото репетитора" className="h-52 w-full object-cover" />
+                  <img src={getPhotoSrc(photo)} alt="Фото репетитора" className="h-52 w-full object-cover" />
                 </div>
               ) : (
                 <p className="mt-3 text-sm text-[#3D1534]/70">Фото ещё не добавлено.</p>
