@@ -79,7 +79,11 @@ export default function TutorProfilePage() {
               const tpRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${iri}`, { headers: { Authorization: `Bearer ${t}`, Accept: 'application/ld+json' } });
               if (tpRes.ok) {
                 const tpJson = await tpRes.json();
-                setTutorProfile(tpJson);
+                const normalizedTutorProfile = {
+                  ...tpJson,
+                  isApproved: tpJson.isApproved ?? false,
+                };
+                setTutorProfile(normalizedTutorProfile);
                 setName(tpJson.name ?? '');
                 setPhoto(tpJson.photo ?? '');
                 setBio(tpJson.bio ?? '');
@@ -326,6 +330,10 @@ export default function TutorProfilePage() {
         subjects: selectedSubjects,
       };
 
+      const wasApproved = Boolean(tutorProfile?.isApproved);
+      console.log('wasApproved (from tutorProfile state):', wasApproved);
+      console.log('tutorProfile full object:', tutorProfile);
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${iri}`, {
         method: 'PATCH',
         headers: {
@@ -342,8 +350,15 @@ export default function TutorProfilePage() {
       }
 
       const updated = await res.json();
-      setTutorProfile(updated);
-      if (updated.isApproved) {
+      console.log('updated response from server:', updated);
+      const updatedIsApproved = Boolean(updated?.isApproved);
+      console.log('updatedIsApproved:', updatedIsApproved);
+      setTutorProfile({
+        ...updated,
+        isApproved: updated?.isApproved ?? false,
+      });
+
+      if (wasApproved && updatedIsApproved) {
         setMessage('Профиль обновлён успешно.');
       } else {
         setMessage('Профиль обновлён и отправлен на модерацию. Как только администратор его одобрит, он появится в публичном каталоге.');

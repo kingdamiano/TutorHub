@@ -1,19 +1,22 @@
 <?php
 namespace App\EventSubscriber;
 
+use App\Entity\TutorProfile;
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class AdminPatchGuardSubscriber implements EventSubscriberInterface
 {
-    private AuthorizationCheckerInterface $auth;
-
-    public function __construct(AuthorizationCheckerInterface $auth)
-    {
-        $this->auth = $auth;
+    public function __construct(
+        private readonly TokenStorageInterface $tokenStorage,
+        private readonly EntityManagerInterface $entityManager,
+    ) {
     }
 
     public static function getSubscribedEvents(): array
@@ -32,27 +35,41 @@ class AdminPatchGuardSubscriber implements EventSubscriberInterface
         }
 
         $path = $request->getPathInfo();
-        // Only guard API tutor_profiles PATCH endpoints
         if (strpos($path, '/api/tutor_profiles') !== 0) {
             return;
         }
 
-        // If user is not admin, nothing to do
-        if (!$this->auth->isGranted('ROLE_ADMIN')) {
+        $token = $this->tokenStorage->getToken();
+        $user = $token?->getUser();
+
+        if (!$user instanceof User) {
             return;
         }
 
-        // Read request body JSON and ensure only "isApproved" is being modified
         $content = $request->getContent();
         if (!$content) {
-            // empty body — allow
             return;
         }
 
         $data = json_decode($content, true);
         if (!is_array($data)) {
-            // non-json body — block for safety
             throw new AccessDeniedHttpException('Admins may only modify isApproved via PATCH');
+        }
+
+        $tutorProfile = $request->attributes->get('data');
+        if (!$tutorProfile instanceof TutorProfile) {
+            $id = $request->attributes->get('id');
+            if ($id !== null && $id !== '') {
+                $tutorProfile = $this->entityManager->getRepository(TutorProfile::class)->find((int) $id);
+            }
+        }
+
+        if (!$tutorProfile instanceof TutorProfile) {
+            return;
+        }
+
+        if (!$this->shouldEnforceAdminRestriction($user, $tutorProfile)) {
+            return;
         }
 
         $allowed = ['isApproved'];
@@ -62,5 +79,22 @@ class AdminPatchGuardSubscriber implements EventSubscriberInterface
                 throw new AccessDeniedHttpException('Admins may only modify isApproved via PATCH');
             }
         }
+    }
+
+    public function shouldEnforceAdminRestriction(UserInterface $user, ?TutorProfile $tutorProfile): bool
+    {
+        if (!$user instanceof User) {
+            return false;
+        }
+
+        if (!in_array('ROLE_ADMIN', $user->getRoles(), true)) {
+            return false;
+        }
+
+        if ($tutorProfile === null) {
+            return true;
+        }
+
+        return $tutorProfile->getUser() !== $user;
     }
 }

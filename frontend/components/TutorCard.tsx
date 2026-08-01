@@ -90,7 +90,7 @@ export default function TutorCard({ tutor, isActive }: { tutor: TutorProfile; is
             </div>
           </div>
 
-          <div className="absolute right-4 bottom-4 rounded-full bg-black/30 px-3 py-1 text-[11px] text-white backdrop-blur-sm">
+          <div className="hidden lg:block absolute right-4 bottom-4 rounded-full bg-black/30 px-3 py-1 text-[11px] text-white backdrop-blur-sm">
             Новый преподаватель
           </div>
         </div>
@@ -103,7 +103,7 @@ export default function TutorCard({ tutor, isActive }: { tutor: TutorProfile; is
             <p className="text-[10px] sm:text-sm text-muted-foreground">{city} · {price} ₽/ч</p>
           </div>
 
-          <div className="flex items-center gap-2 overflow-hidden whitespace-nowrap text-[10px] sm:text-[11px]">
+          <div className="flex flex-wrap lg:flex-nowrap items-center gap-2 text-[10px] sm:text-[11px]">
             {visibleSubjects.map((subject, index) => (
               <span
                 key={`${subject}-${index}`}

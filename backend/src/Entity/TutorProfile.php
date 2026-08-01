@@ -16,6 +16,8 @@ use ApiPlatform\Metadata\ApiFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
@@ -23,9 +25,10 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new Get(
             security: "object.isApproved() or is_granted('ROLE_ADMIN') or (is_granted('ROLE_USER') and object.getUser() and object.getUser().getId() == user.getId())",
-            securityMessage: 'Only approved profiles, owners, and admins may view this tutor profile.'
+            securityMessage: 'Only approved profiles, owners, and admins may view this tutor profile.',
+            normalizationContext: ['groups' => ['tutor_profile:item']]
         ),
-        new GetCollection(),
+        new GetCollection(normalizationContext: ['groups' => ['tutor_profile:collection']]),
         new Post(
             security: "is_granted('ROLE_TUTOR')",
             securityMessage: 'Only tutors can create a tutor profile.'
@@ -83,6 +86,7 @@ class TutorProfile
     private ?string $rating = null;
 
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    #[Groups(['tutor_profile:item', 'tutor_profile:collection'])]
     private bool $isApproved = false;
 
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
@@ -104,6 +108,7 @@ class TutorProfile
         $this->bookings = new ArrayCollection();
     }
 
+    #[Groups(['tutor_profile:item', 'tutor_profile:collection'])]
     public function getId(): ?int
     {
         return $this->id;
@@ -120,6 +125,7 @@ class TutorProfile
         return $this;
     }
 
+    #[Groups(['tutor_profile:item', 'tutor_profile:collection'])]
     public function getBio(): ?string
     {
         return $this->bio;
@@ -131,6 +137,7 @@ class TutorProfile
         return $this;
     }
 
+    #[Groups(['tutor_profile:item', 'tutor_profile:collection'])]
     public function getCity(): ?string
     {
         return $this->city;
@@ -142,6 +149,7 @@ class TutorProfile
         return $this;
     }
 
+    #[Groups(['tutor_profile:item', 'tutor_profile:collection'])]
     public function getName(): ?string
     {
         return $this->name;
@@ -153,6 +161,7 @@ class TutorProfile
         return $this;
     }
 
+    #[Groups(['tutor_profile:item', 'tutor_profile:collection'])]
     public function getPricePerHour(): ?string
     {
         return $this->pricePerHour;
@@ -164,6 +173,7 @@ class TutorProfile
         return $this;
     }
 
+    #[Groups(['tutor_profile:item', 'tutor_profile:collection'])]
     public function getPhoto(): ?string
     {
         return $this->photo;
@@ -186,6 +196,8 @@ class TutorProfile
         return $this;
     }
 
+    #[Groups(['tutor_profile:item', 'tutor_profile:collection'])]
+    #[SerializedName('isApproved')]
     public function isApproved(): bool
     {
         return $this->isApproved;
@@ -208,6 +220,7 @@ class TutorProfile
         return $this;
     }
 
+    #[Groups(['tutor_profile:item', 'tutor_profile:collection'])]
     public function getSubjects(): Collection
     {
         return $this->subjects;
